@@ -154,7 +154,7 @@ export default {
                   console.log(d)
                 })*/
         .append("title")
-        .text(function(d) { return d.data.name.slice(d.data.name.lastIndexOf('\\') + 1) })
+        .text(function(d) { return d.data.name.slice(d.data.name.lastIndexOf('/') + 1) })
         .each(function(d) {
           // console.log(this)
           // console.log(this.getBBox().width)
@@ -176,7 +176,7 @@ export default {
         .each(function(d) {
           // console.log(document.getElementById(d.data.name).getTotalLength())
         })
-        .text(d => d.data.name.slice(d.data.name.lastIndexOf('\\') + 1))
+        .text(d => d.data.name.slice(d.data.name.lastIndexOf('/') + 1))
         .each(function(d) {
           //filter visible text
           let maxDim = Math.max(this.getBBox().height, this.getBBox().width),

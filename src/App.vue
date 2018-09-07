@@ -9,7 +9,10 @@
       <dep-table class="dep-table"></dep-table>
       <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
     </div>
-    <word-cloud class="right-panel" :root="treeRoot"></word-cloud>
+    <div class="right-panel">
+      <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
+      <div class="other"></div>
+    </div>
     <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
   </div>
@@ -40,7 +43,7 @@ export default {
       treeRoot: null
     }
   },
-  updated(){
+  updated() {
     console.log('app updated');
   },
   methods: {
@@ -48,7 +51,7 @@ export default {
       this.$axios.get('files/getFolderHierarchy').then(({ data }) => {
         this.treeRoot = d3.hierarchy(data);
         this.treeRoot.sum(function(d) { return d.size ? 1 : 0; });
-        console.log('root in app:',this.treeRoot)
+        console.log('root in app:', this.treeRoot)
       })
     }
   },
@@ -92,6 +95,14 @@ export default {
   }
   .right-panel {
     flex: 1;
+    display:flex;
+    flex-direction: column;
+    .word-cloud{
+      flex:1;
+    }
+    .other{
+      flex:1;
+    }
   }
 }
 

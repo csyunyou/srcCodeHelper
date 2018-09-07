@@ -73,6 +73,9 @@ export default {
         	return 'white'
         })
         .attr("stroke","black")
+        .on('click',(d)=>{
+          this.$bus.$emit('draw-wordcloud',d.id)
+        })
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)

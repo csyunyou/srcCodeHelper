@@ -33,7 +33,6 @@ import * as d3 from 'd3'
 export default {
   data() {
     return {
-      root: null,
       deps: null,
       svg: null,
       svgWidth: null,
@@ -56,8 +55,10 @@ export default {
       fileDepInfo: null // store dep info for each file
     }
   },
-  updated(){
-    // console.log("updated")
+  props: ['root'],
+  updated() {
+    console.log("dephellwrapper updated")
+    console.log('root in dephell:', this.root)
   },
   computed: {
     dendrogramR() { return Math.min(this.svgWidth, this.svgHeight) / 2 - 150 },
@@ -145,9 +146,9 @@ export default {
           console.log(depInfo)
           // depInfo.forEach((val,idx)=>val.id=idx)
           // console.log(depInfo)
-          vm.$bus.$emit('begin-dep-path',Object.assign({depInfo,colorMap:vm.colorMap}))
-          vm.$bus.$emit('begin-dep-table',Object.assign({depInfo,colorMap:vm.colorMap}))
-          vm.$bus.$emit('file-select',d.data.name)
+          vm.$bus.$emit('begin-dep-path', Object.assign({ depInfo, colorMap: vm.colorMap }))
+          vm.$bus.$emit('begin-dep-table', Object.assign({ depInfo, colorMap: vm.colorMap }))
+          vm.$bus.$emit('file-select', d.data.name)
         })
         /*.on("mouseenter",function(d){
                   d3.select(this).attr("transform",'scale(2 2)')
@@ -282,7 +283,7 @@ export default {
 
           // console.log(map)
           // For each path, construct a link from the source to target node.
-          paths.forEach(function({path}) {
+          paths.forEach(function({ path }) {
             path.reduce(function(a, b) {
               // console.log(a,b)
               shortestPathArr.push(map[a].path(map[b]))
@@ -295,7 +296,7 @@ export default {
     },
     drawRadialStack() {
       //get StackData from badDeps
-      let keys = ['long', 'indirect', 'direct'].map(d=>`${d}-count`),
+      let keys = ['long', 'indirect', 'direct'].map(d => `${d}-count`),
         stack = d3.stack().keys(keys)
       this.fileDepInfo = []
       this.root.leaves().forEach(node => {
@@ -304,9 +305,9 @@ export default {
         for (let dep of this.badDeps) {
           let type = dep.type,
             paths = dep.paths,
-            filteredDeps=paths.filter(d => d.path.indexOf(fileName) !== -1)
-            stackItem[`${type}-paths`] = filteredDeps
-            stackItem[`${type}-count`] = filteredDeps.length
+            filteredDeps = paths.filter(d => d.path.indexOf(fileName) !== -1)
+          stackItem[`${type}-paths`] = filteredDeps
+          stackItem[`${type}-count`] = filteredDeps.length
         }
         this.fileDepInfo.push(stackItem)
       })
@@ -352,22 +353,20 @@ export default {
         else
           return 0
       })
+    },
+    root(val) {
+      console.log('root in dephellwrapper watch:', this.root)
+      if (val) {
+        this.initSvg()
+        console.log(this.root)
+        this.drawDendrogram()
+        this.drawHierachy()
+        this.drawDepLinks()
+      }
     }
   },
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
-    // console.log(this.lenTreshold)
-    this.$axios.get('files/getFolderHierarchy').then(({ data }) => {
-      // console.log(root)]
-      this.initSvg()
-      this.root = d3.hierarchy(data);
-      this.root.sum(function(d) { return d.size ? 1 : 0; });
-      console.log(this.root)
-      this.drawDendrogram()
-      this.drawHierachy()
-      this.drawDepLinks()
-      // this.drawRadialStack()
-    })
   }
 }
 

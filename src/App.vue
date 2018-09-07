@@ -2,24 +2,26 @@
   <div id="app">
     <!-- <chord-chart></chord-chart> -->
     <!-- <div class="left-panel" ref="leftPanel"> -->
-      <dep-hell-wrapper class="left-panel"></dep-hell-wrapper>
-      <!-- <dep-path-wrapper class="mid-panel"></dep-path-wrapper> -->
-      <div class="right-panel">
-        <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
-        <dep-table class="dep-table"></dep-table>
-        <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
-      </div>
-      <!-- <test></test> -->
+    <dep-hell-wrapper class="left-panel" :root="treeRoot"></dep-hell-wrapper>
+    <!-- <dep-path-wrapper class="mid-panel"></dep-path-wrapper> -->
+    <div class="mid-panel">
+      <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
+      <dep-table class="dep-table"></dep-table>
+      <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
+    </div>
+    <word-cloud class="right-panel" :root="treeRoot"></word-cloud>
+    <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
   </div>
 </template>
-
 <script>
+import * as d3 from 'd3'
 import HelloWorld from './components/HelloWorld'
 import ChordChart from './components/ChordChart.vue'
 import DepHellWrapper from './components/DepHellWrapper.vue'
 import DepPathWrapper from './components/DepPathWrapper.vue'
 import DepTable from './components/DepTable.vue'
+import WordCloud from './components/WordCloud.vue'
 import Test from './components/test.vue'
 export default {
   name: 'App',
@@ -29,20 +31,35 @@ export default {
     DepHellWrapper,
     DepPathWrapper,
     DepTable,
+    WordCloud,
     Test
   },
-  data(){
-    return{
-      selectedFileName:'None'
+  data() {
+    return {
+      selectedFileName: 'None',
+      treeRoot: null
     }
   },
-  mounted(){
+  updated(){
+    console.log('app updated');
+  },
+  methods: {
+    getFolderHierarchy() {
+      this.$axios.get('files/getFolderHierarchy').then(({ data }) => {
+        this.treeRoot = d3.hierarchy(data);
+        this.treeRoot.sum(function(d) { return d.size ? 1 : 0; });
+        console.log('root in app:',this.treeRoot)
+      })
+    }
+  },
+  mounted() {
     console.log(this.$refs.leftPanel)
-    this.$bus.$on('file-select',d=>this.selectedFileName=d)
+    this.$bus.$on('file-select', d => this.selectedFileName = d)
+    this.getFolderHierarchy()
   }
 }
-</script>
 
+</script>
 <style lang="scss" type="text/css">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -53,25 +70,29 @@ export default {
   display: flex;
   /*height: 100%;*/
   margin-top: 60px;
-  .left-panel{
-    flex:1;
+  .left-panel {
+    flex: 1.3;
   }
-/*   .mid-panel{
+  /*   .mid-panel{
     flex:1;
   } */
-  .right-panel{
-    flex:2;
+  .mid-panel {
+    flex: 2;
     display: flex;
-    flex-direction:column;
-    .selected-file{
+    flex-direction: column;
+    .selected-file {
       font-weight: bold;
     }
-    .dep-table{
-      flex:none;
+    .dep-table {
+      flex: none;
     }
-    .dep-path-wrapper{
-      flex:auto;
+    .dep-path-wrapper {
+      flex: auto;
     }
   }
+  .right-panel {
+    flex: 1;
+  }
 }
+
 </style>

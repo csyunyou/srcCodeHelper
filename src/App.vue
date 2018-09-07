@@ -72,7 +72,7 @@ export default {
   color: #2c3e50;
   display: flex;
   /*height: 100%;*/
-  margin-top: 60px;
+  // margin-top: 60px;
   .left-panel {
     flex: 1.3;
   }

@@ -49,13 +49,12 @@ export default {
       typeStatus: [true, true, true], //indicates whether corresponding type(dep link and rect style) is visible or not
       depLinkGroupG: null,
       longestDepLen: 99999,
-      badDeps: null,
       hierarchyHiehgt: 100,
       stackHeight: 30,
       fileDepInfo: null // store dep info for each file
     }
   },
-  props: ['root'],
+  props: ['root','badDeps'],
   updated() {
     console.log("dephellwrapper updated")
     console.log('root in dephell:', this.root)
@@ -243,12 +242,10 @@ export default {
     },
     drawDepLinks() {
       // console.log(this.lenTreshold)
-      this.$axios.get('files/getBadDeps', { lenTreshold: this.lenTreshold }).then(({ data }) => {
         // let { directCirclePaths, indirectCirclePaths } = data
-        this.badDeps = data
         //radialStack depends on badDeps data
         this.drawRadialStack()
-        data = data.slice()
+        let data = this.badDeps.slice()
         let longGroup = data.find(d => d.type === 'long'),
           svg = this.svg.append("g")
           .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
@@ -292,7 +289,6 @@ export default {
           })
           return shortestPathArr
         }
-      })
     },
     drawRadialStack() {
       //get StackData from badDeps
@@ -357,8 +353,8 @@ export default {
     root(val) {
       console.log('root in dephellwrapper watch:', this.root)
       if (val) {
-        this.initSvg()
         console.log(this.root)
+        this.initSvg()
         this.drawDendrogram()
         this.drawHierachy()
         this.drawDepLinks()

@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <chord-chart></chord-chart> -->
     <!-- <div class="left-panel" ref="leftPanel"> -->
-    <dep-hell-wrapper class="left-panel" :root="treeRoot"></dep-hell-wrapper>
+    <dep-hell-wrapper class="left-panel" :root="treeRoot" :badDeps="badDeps"></dep-hell-wrapper>
     <!-- <dep-path-wrapper class="mid-panel"></dep-path-wrapper> -->
     <div class="mid-panel">
       <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
@@ -40,7 +40,8 @@ export default {
   data() {
     return {
       selectedFileName: 'None',
-      treeRoot: null
+      treeRoot: null,
+      badDeps: null
     }
   },
   updated() {
@@ -48,15 +49,18 @@ export default {
   },
   methods: {
     getFolderHierarchy() {
-      this.$axios.get('files/getFolderHierarchy').then(({ data }) => {
-        this.treeRoot = d3.hierarchy(data);
-        this.treeRoot.sum(function(d) { return d.size ? 1 : 0; });
+      this.$axios.get('files/getFolderHierarchyAndFileInfo', {
+        lenTreshold: 22
+      }).then(({ data }) => {
+        this.treeRoot = d3.hierarchy(data.root);
+        console.log(this.treeRoot)
+        this.treeRoot.sum(function(d) { return !d.children && d.fileInfo && d.fileInfo.size ? 1 : 0; });
+        this.badDeps = data.badDeps
         console.log('root in app:', this.treeRoot)
       })
     }
   },
   mounted() {
-    console.log(this.$refs.leftPanel)
     this.$bus.$on('file-select', d => this.selectedFileName = d)
     this.getFolderHierarchy()
   }
@@ -95,13 +99,13 @@ export default {
   }
   .right-panel {
     flex: 1;
-    display:flex;
+    display: flex;
     flex-direction: column;
-    .word-cloud{
-      flex:1;
+    .word-cloud {
+      flex: 1;
     }
-    .other{
-      flex:1;
+    .other {
+      flex: 1;
     }
   }
 }

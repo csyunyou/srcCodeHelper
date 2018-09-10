@@ -2,16 +2,21 @@
   <div id="app">
     <!-- <chord-chart></chord-chart> -->
     <!-- <div class="left-panel" ref="leftPanel"> -->
-    <dep-hell-wrapper class="left-panel" :root="treeRoot" :badDeps="badDeps"></dep-hell-wrapper>
-    <!-- <dep-path-wrapper class="mid-panel"></dep-path-wrapper> -->
-    <div class="mid-panel">
-      <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
-      <dep-table class="dep-table"></dep-table>
-      <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
+    <div class="row">
+      <dep-hell-wrapper class="left-panel" :root="treeRoot" :badDeps="badDeps"></dep-hell-wrapper>
+      <div class="mid-panel">
+        <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
+        <dep-table class="dep-table"></dep-table>
+        <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
+      </div>
+      <div class="right-panel">
+        <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
+        <div class="other"></div>
+      </div>
     </div>
-    <div class="right-panel">
-      <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
-      <div class="other"></div>
+    <div class="row">
+      <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
+      <div class="right-panel"></div>
     </div>
     <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
@@ -25,6 +30,7 @@ import DepHellWrapper from './components/DepHellWrapper.vue'
 import DepPathWrapper from './components/DepPathWrapper.vue'
 import DepTable from './components/DepTable.vue'
 import WordCloud from './components/WordCloud.vue'
+import ParallelCoordinate from './components/ParallelCoordinate.vue'
 import Test from './components/test.vue'
 export default {
   name: 'App',
@@ -35,6 +41,7 @@ export default {
     DepPathWrapper,
     DepTable,
     WordCloud,
+    ParallelCoordinate,
     Test
   },
   data() {
@@ -68,6 +75,13 @@ export default {
 
 </script>
 <style lang="scss" type="text/css">
+html {
+  height: 100%;
+  body {
+    height: 100%;
+  }
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -75,37 +89,50 @@ export default {
   /*text-align: center;*/
   color: #2c3e50;
   display: flex;
-  /*height: 100%;*/
-  // margin-top: 60px;
-  .left-panel {
-    flex: 1.3;
-  }
-  /*   .mid-panel{
-    flex:1;
-  } */
-  .mid-panel {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    .selected-file {
-      font-weight: bold;
+  height: 100%;
+  flex-direction: column;
+  .row {
+    &:nth-child(1) {
+      flex: 2;
+      display: flex;
+      .left-panel {
+        flex: 1.3;
+      }
+      .mid-panel {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        .selected-file {
+          font-weight: bold;
+        }
+        .dep-table {
+          flex: none;
+        }
+        .dep-path-wrapper {
+          flex: auto;
+        }
+      }
+      .right-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .word-cloud {
+          flex: 1;
+        }
+        .other {
+          flex: 1;
+        }
+      }
     }
-    .dep-table {
-      flex: none;
-    }
-    .dep-path-wrapper {
-      flex: auto;
-    }
-  }
-  .right-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    .word-cloud {
+    &:nth-child(2) {
       flex: 1;
-    }
-    .other {
-      flex: 1;
+      display: flex;
+      .left-panel {
+        flex: 2
+      }
+      .right-panel {
+        flex: 1
+      }
     }
   }
 }

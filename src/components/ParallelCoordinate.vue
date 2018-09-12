@@ -10,7 +10,9 @@ export default {
     return {
       svgHeight: null,
       svgWidth: null,
-      chartData: null
+      chartData: null,
+      dimensions: ['func', 'depending', 'depended', 'direct', 'indirect', 'long', 'size'],
+      y:{}
     }
   },
   props: ['root'],
@@ -24,28 +26,31 @@ export default {
       }
     }
   },
+  computed: {
+    extents() {
+      return this.dimensions.map(function(p) { return [0, 0]; });
+    }
+  },
   methods: {
     draw() {
+      const that = this
+
       function path(d) {
-        console.log(dimensions.map(function(dim) { return [x(dim), y[dim](d[dim])]; }))
-        return line(dimensions.map(function(dim) { return [x(dim), y[dim](d[dim])]; }));
+        return line(that.dimensions.map(function(dim) { return [x(dim), that.y[dim](d[dim])]; }));
       }
-      var margin = { top: 50, right: 10, bottom: 40, left: 40 },
+      var margin = { top: 50, right: 10, bottom: 30, left: 40 },
         width = this.svgWidth - margin.left - margin.right,
         height = this.svgHeight - margin.top - margin.bottom;
 
-      console.log('svgWidth',this.svgWidth)
       var x = d3.scaleBand().rangeRound([0, this.svgWidth]).padding(0.2),
-        y = {},
         dragging = {};
 
 
       var line = d3.line(),
         //axis = d3.axisLeft(x),
         background,
-        foreground,
-        extents,
-        dimensions = ['func', 'depending', 'depended', 'direct', 'indirect', 'long', 'size'];
+        foreground
+
 
       var svg = d3.select(this.$refs.root).append("svg")
         .attr("width", this.svgWidth)
@@ -53,19 +58,27 @@ export default {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      x.domain(dimensions);
+      x.domain(this.dimensions);
 
-      // 画线
-      dimensions.forEach((d) => {
-        y[d] = d3.scaleLinear()
+      this.dimensions.forEach((d) => {
+        this.y[d] = d3.scaleLinear()
           .domain(d3.extent(this.chartData, function(p) {
             return +p[d];
           }))
           .range([height, 0])
       })
 
-      background = svg.append("g")
+      // 未选中时的背景灰线
+      svg.append("g")
         .attr("class", "background")
+        .selectAll("path")
+        .data(this.chartData)
+        .enter().append("path")
+        .attr("d", path);
+
+      // 选中时的前景蓝线
+      foreground = svg.append("g")
+        .attr("class", "foreground")
         .selectAll("path")
         .data(this.chartData)
         .enter().append("path")
@@ -73,20 +86,32 @@ export default {
 
       // 画坐标轴
       var g = svg.selectAll(".dimension")
-        .data(dimensions)
+        .data(this.dimensions)
         .enter().append("g")
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
 
       g.append("g")
         .attr("class", "axis")
-        .each(function(d) { d3.select(this).call(d3.axisLeft(y[d])); })
-        //text does not show up because previous line breaks somehow
+        .each(function(d) { d3.select(this).call(d3.axisLeft(that.y[d])); })
         .append("text")
         .attr("fill", "black")
         .style("text-anchor", "middle")
         .attr("y", -9)
         .text(function(d) { return d; });
+
+      // 添加画刷
+      g.append("g")
+        .attr("class", "brush")
+        .each(function(d) {
+          d3.select(this).call(that.y[d].brush = d3.brushY().extent([
+            [-8, 0],
+            [8, height]
+          ]).on("brush start", that.brushstart.bind(that)).on("brush", that.brushParallelChart.bind(that)));
+        })
+        .selectAll("rect")
+        .attr("x", -8)
+        .attr("width", 16);
 
     },
     dataAdapter() {
@@ -102,6 +127,28 @@ export default {
           ...fileInfo
         })
       })
+    },
+    brushstart() {
+      console.log('brush start')
+      d3.event.sourceEvent.stopPropagation();
+    },
+    brushParallelChart() {
+      const that=this
+      for (var i = 0; i < this.dimensions.length; ++i) {
+        const dim=this.dimensions[i]
+
+        if (d3.event.target == this.y[dim].brush) {
+          this.extents[i] = d3.event.selection.map(this.y[dim].invert, this.y[dim]);
+        }
+      }
+      d3.selectAll('.foreground>path').style("display", function(d) {
+        return that.dimensions.every(function(p, i) {
+          if (that.extents[i][0] == 0 && that.extents[i][0] == 0) {
+            return true;
+          }
+          return that.extents[i][1] <= d[p] && d[p] <= that.extents[i][0];
+        }) ? null : "none";
+      });
     }
   },
   mounted() {
@@ -118,8 +165,14 @@ export default {
   .background path {
     fill: none;
     stroke: #ddd;
-    stroke-opacity: 1;
+    stroke-opacity: .4;
     shape-rendering: crispEdges;
+  }
+
+  .foreground path {
+    fill: none;
+    stroke: steelblue;
+    stroke-opacity: .7;
   }
 }
 

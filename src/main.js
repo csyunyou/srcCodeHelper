@@ -10,7 +10,7 @@ Vue.prototype.$axios=axios
 Vue.prototype.$bus = new Vue(); 
 Vue.use(ElementUI);
 
-/* eslint-disable no-new */
+	/* eslint-disable no-new */
 new Vue({
   el: '#app',
   components: { App },

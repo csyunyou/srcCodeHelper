@@ -1,6 +1,6 @@
 <template>
   <div ref="root">
-  	<!-- <div>num:</div> -->
+    <!-- <div>num:</div> -->
   </div>
 </template>
 <script type="text/javascript">
@@ -12,9 +12,9 @@ export default {
       svgWidth: null,
       svgHeight: null,
       svg: null,
-      nodes:null,
-      links:null,
-      defaultR:5
+      nodes: null,
+      links: null,
+      defaultR: 5
     }
   },
   methods: {
@@ -22,14 +22,14 @@ export default {
       // console.log(this.depData)
       let nodes = new Set(),
         links = new Set()
-      this.depData.forEach(({path}) => {
+      this.depData.forEach(({ path }) => {
         for (let i = 0; i < path.length - 1; i++) {
           nodes.add(path[i]) //add node
           links.add(path[i] + '|' + path[i + 1]) //add link('|' is used as conjunction to connect the two nodes)
         }
         //we need to connect the last node and the first node in type 'indirect'
-        if(this.type==='indirect')
-        	links.add(path[path.length-1]+'|'+path[0])
+        if (this.type === 'indirect')
+          links.add(path[path.length - 1] + '|' + path[0])
         nodes.add(path[path.length - 1]) // do not miss the last node
       })
       // console.log(nodes, links)
@@ -40,12 +40,12 @@ export default {
       })
       // console.log(this.graphData)
     },
-    resetAllStyle(){
-    	this.nodes.attr("stroke-dasharray",null).attr("r",this.defaultR)
-    	this.links.attr("stroke-dasharray",null)
+    resetAllStyle() {
+      this.nodes.attr("stroke-dasharray", null).attr("r", this.defaultR)
+      this.links.attr("stroke-dasharray", null)
     },
     draw() {
-    let vm=this
+      let vm = this
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
         .force("charge", d3.forceManyBody().distanceMax(100))
@@ -58,7 +58,7 @@ export default {
         .selectAll("line")
         .data(this.graphData.links)
         .enter().append("line")
-        .attr("stroke", d=>this.color)
+        .attr("stroke", d => this.color)
         .attr("stroke-width", function(d) { return 2 });
 
       this.nodes = this.svg.append("g")
@@ -67,12 +67,15 @@ export default {
         .data(this.graphData.nodes)
         .enter().append("circle")
         .attr("r", this.defaultR)
-        .attr("fill",d=>{
-        	if(d.id===this.fileName)
-        		return '#636363'
-        	return 'white'
+        .attr("fill", d => {
+          if (d.id === this.fileName)
+            return '#636363'
+          return 'white'
         })
-        .attr("stroke","black")
+        .attr("stroke", "black")
+        .on('click', (d) => {
+          this.$bus.$emit('draw-wordcloud', d.id)
+        })
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -119,7 +122,7 @@ export default {
 
     }
   },
-  props: ['color', 'type', 'depData','fileName'],
+  props: ['color', 'type', 'depData', 'fileName'],
   watch: {
     depData() {
       // console.log('depData update')
@@ -141,34 +144,36 @@ export default {
     this.svg = d3.select(this.$refs.root).append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
     this.dataAdapter()
     this.draw()
-    this.$bus.$on('highlight-dep',dep=>{
-    	if(dep.type!==this.type) return
-    	this.resetAllStyle()
-    	let path=dep.path,nodes=[],links=[]
-    	//nodes and links are extracted from path to highlight the coresponding links and nodes svg
-    	for(let i=0,len=path.length;i<len-1;i++){
-    		nodes.push(path[i])
-    		links.push({source:path[i],dep:path[i+1]})
-    	}
-    	//we need to connect the last node and the first node in type 'indirect'
-    	if(this.type==='indirect')
-    		links.push({source:path[path.length-1],dep:path[0]})
-    	nodes.push(path[path.length-1])
+    this.$bus.$on('highlight-dep', dep => {
+      if (dep.type !== this.type) return
+      this.resetAllStyle()
+      let path = dep.path,
+        nodes = [],
+        links = []
+      //nodes and links are extracted from path to highlight the coresponding links and nodes svg
+      for (let i = 0, len = path.length; i < len - 1; i++) {
+        nodes.push(path[i])
+        links.push({ source: path[i], dep: path[i + 1] })
+      }
+      //we need to connect the last node and the first node in type 'indirect'
+      if (this.type === 'indirect')
+        links.push({ source: path[path.length - 1], dep: path[0] })
+      nodes.push(path[path.length - 1])
 
-    	// console.log(nodes,links,this.nodes)
+      // console.log(nodes,links,this.nodes)
 
-    	//highlight nodes
-    	this.nodes.filter(function(node){
-    		return nodes.find(d=>d===node.id)!==undefined
-    	}).attr('stroke-dasharray','2')
+      //highlight nodes
+      this.nodes.filter(function(node) {
+        return nodes.find(d => d === node.id) !== undefined
+      }).attr('stroke-dasharray', '2')
 
-    	//highlight the first and last nodes
-    	this.nodes.filter(node=>nodes.findIndex(d=>d===node.id)===0).attr("r",10)
-    	this.nodes.filter(node=>nodes.findIndex(d=>d===node.id)===nodes.length-1).attr("r",4)
+      //highlight the first and last nodes
+      this.nodes.filter(node => nodes.findIndex(d => d === node.id) === 0).attr("r", 10)
+      this.nodes.filter(node => nodes.findIndex(d => d === node.id) === nodes.length - 1).attr("r", 4)
 
-    	//highlight links
-    	this.links.filter(link=>links.find(d=>link.source.id===d.source&&link.target.id===d.dep)!==undefined)
-    		.attr("stroke-dasharray",'3')
+      //highlight links
+      this.links.filter(link => links.find(d => link.source.id === d.source && link.target.id === d.dep) !== undefined)
+        .attr("stroke-dasharray", '3')
     })
     // this.dataAdapter()
     // console.log(this.color,this.type,this.depData)

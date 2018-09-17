@@ -57,7 +57,7 @@ export default {
   methods: {
     getFolderHierarchy() {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
-        lenTreshold: 22
+        lenTreshold: 15
       }).then(({ data }) => {
         this.treeRoot = d3.hierarchy(data.root);
         console.log(this.treeRoot)

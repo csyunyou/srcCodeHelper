@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" id="parallel-coordinate">
+  <div ref="root" id="parallel-coordinate" @click="resetBrush">
   </div>
 </template>
 <script type="text/javascript">
@@ -12,7 +12,8 @@ export default {
       svgWidth: null,
       chartData: null,
       dimensions: ['func', 'depending', 'depended', 'direct', 'indirect', 'long', 'size'],
-      y:{}
+      extents: null,
+      y: {}
     }
   },
   props: ['root'],
@@ -27,11 +28,16 @@ export default {
     }
   },
   computed: {
-    extents() {
-      return this.dimensions.map(function(p) { return [0, 0]; });
-    }
+    /*    extents() {
+          return this.dimensions.map(function(p) { return [0, 0]; });
+        }*/
   },
   methods: {
+    resetBrush() {
+      this.extents = this.dimensions.map(function(p) { return [0, 0]; });
+      this.brushParallelChart()
+      d3.selectAll('.brush rect:nth-child(n+2)').style('display','none')
+    },
     draw() {
       const that = this
 
@@ -82,7 +88,9 @@ export default {
         .selectAll("path")
         .data(this.chartData)
         .enter().append("path")
-        .attr("d", path);
+        .attr("d", path)
+        .append('title')
+        .text(d => d.name);
 
       // 画坐标轴
       var g = svg.selectAll(".dimension")
@@ -133,11 +141,12 @@ export default {
       d3.event.sourceEvent.stopPropagation();
     },
     brushParallelChart() {
-      const that=this
+      console.log(this.extents)
+      const that = this
       for (var i = 0; i < this.dimensions.length; ++i) {
-        const dim=this.dimensions[i]
+        const dim = this.dimensions[i]
 
-        if (d3.event.target == this.y[dim].brush) {
+        if (d3.event && (d3.event.target == this.y[dim].brush)) {
           this.extents[i] = d3.event.selection.map(this.y[dim].invert, this.y[dim]);
         }
       }
@@ -154,7 +163,8 @@ export default {
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
-    console.log(this.svgWidth, this.svgHeight)
+    this.extents = this.dimensions.map(function(p) { return [0, 0]; })
+    console.log(this.svgWidth, this.svgHeight, this.extents)
   }
 }
 

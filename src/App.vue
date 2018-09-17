@@ -16,7 +16,10 @@
     </div>
     <div class="row">
       <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
-      <partition class="right-panel" :root="dependedData"></partition>
+      <div class="right-panel">
+        <partition :root="dependedData" class="partition-chart"></partition>
+        <partition :root="dependedData" class="partition-chart"></partition>
+      </div>
     </div>
     <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
@@ -172,10 +175,15 @@ html {
       flex: 1;
       display: flex;
       .left-panel {
-        flex: 2
+        flex: 2;
       }
       .right-panel {
-        flex: 1
+        flex: 1;
+        display:flex;
+        flex-direction: column;
+        .partition-chart{
+          flex:1;
+        }
       }
     }
   }

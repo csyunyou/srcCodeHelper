@@ -16,7 +16,7 @@
     </div>
     <div class="row">
       <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
-      <tree-map class="right-panel" :root="treeRoot"></tree-map>
+      <partition class="right-panel" :root="dependedData"></partition>
     </div>
     <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
@@ -31,7 +31,7 @@ import DepPathWrapper from './components/DepPathWrapper.vue'
 import DepTable from './components/DepTable.vue'
 import WordCloud from './components/WordCloud.vue'
 import ParallelCoordinate from './components/ParallelCoordinate.vue'
-import TreeMap from './components/TreeMap.vue'
+import Partition from './components/Partition.vue'
 import Test from './components/test.vue'
 export default {
   name: 'App',
@@ -43,14 +43,15 @@ export default {
     DepTable,
     WordCloud,
     ParallelCoordinate,
-    TreeMap,
+    Partition,
     Test
   },
   data() {
     return {
       selectedFileName: 'None',
       treeRoot: null,
-      badDeps: null
+      badDeps: null,
+      dependedData:null
     }
   },
   updated() {
@@ -67,10 +68,51 @@ export default {
         this.badDeps = data.badDeps
         console.log('root in app:', this.treeRoot)
       })
+    },
+    partitionDataAdapter(selectedFile) {
+      // 深搜查找节点
+      function dfs(root) {
+        if (root.data.type === 'file') {
+          if (root.data.name === selectedFile)
+            return root
+          else return null
+        }
+        for (let i = 0, len = root.children.length; i < len; i++) {
+          let res = dfs(root.children[i])
+          if (res !== null) return res
+        }
+        return null
+      }
+      let fileNode = dfs(this.treeRoot)
+      this.dependedData=this.buildHierarchy(fileNode.data.fileInfo.depended)
+      console.log('depended data:',this.dependedData)
+      // this.dependedData=this.buildHierarchy(data.fileInfo.depended)
+    },
+    buildHierarchy(depends){
+      let root={children:[]}
+      depends.forEach((dep)=>{
+        let child={
+          name:dep.file,
+          children:[]
+        }
+        dep.specifiers.forEach((d)=>{
+          child.children.push({
+            name:d.name
+          })
+        })
+        root.children.push(child)
+      })
+      let treeRoot=d3.hierarchy(root)
+      treeRoot.sum(function(d) { return !d.children? 1 : 0; });
+      return d3.partition()(treeRoot)
     }
   },
   mounted() {
     this.$bus.$on('file-select', d => this.selectedFileName = d)
+    this.$bus.$on('draw-partition', (selectedFile) => {
+      this.partitionDataAdapter(selectedFile)
+      // this.draw()
+    })
     this.getFolderHierarchy()
   }
 }

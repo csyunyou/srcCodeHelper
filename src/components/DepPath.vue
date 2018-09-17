@@ -75,7 +75,7 @@ export default {
         .attr("stroke", "black")
         .on('click', (d) => {
           this.$bus.$emit('draw-wordcloud', d.id)
-          this.$bus.$emit('draw-treemap', d.id)
+          this.$bus.$emit('draw-partition', d.id)
         })
         .call(d3.drag()
           .on("start", dragstarted)

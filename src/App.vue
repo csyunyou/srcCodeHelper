@@ -16,7 +16,7 @@
     </div>
     <div class="row">
       <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
-      <div class="right-panel"></div>
+      <tree-map class="right-panel" :root="treeRoot"></tree-map>
     </div>
     <!-- <test></test> -->
     <!-- <div class="right-panel"></div> -->
@@ -31,6 +31,7 @@ import DepPathWrapper from './components/DepPathWrapper.vue'
 import DepTable from './components/DepTable.vue'
 import WordCloud from './components/WordCloud.vue'
 import ParallelCoordinate from './components/ParallelCoordinate.vue'
+import TreeMap from './components/TreeMap.vue'
 import Test from './components/test.vue'
 export default {
   name: 'App',
@@ -42,6 +43,7 @@ export default {
     DepTable,
     WordCloud,
     ParallelCoordinate,
+    TreeMap,
     Test
   },
   data() {

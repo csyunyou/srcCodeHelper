@@ -18,7 +18,7 @@
       <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
       <div class="right-panel">
         <partition :root="dependedData" class="partition-chart" type='depended'></partition>
-        <partition :root="dependedData" class="partition-chart" type='denpending'></partition>
+        <partition :root="dependingData" class="partition-chart" type='denpending'></partition>
       </div>
     </div>
     <!-- <test></test> -->
@@ -88,7 +88,7 @@ export default {
       }
       let fileNode = dfs(this.treeRoot)
       this.dependedData=this.buildHierarchy(fileNode.data.fileInfo.depended)
-      console.log('depended data:',this.dependedData)
+      this.dependingData=this.buildHierarchy(fileNode.data.fileInfo.depending)
       // this.dependedData=this.buildHierarchy(data.fileInfo.depended)
     },
     buildHierarchy(depends){
@@ -100,7 +100,8 @@ export default {
         }
         dep.specifiers.forEach((d)=>{
           child.children.push({
-            name:d.name
+            name:d.name,
+            type:d.type
           })
         })
         root.children.push(child)

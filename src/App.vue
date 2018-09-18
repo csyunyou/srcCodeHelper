@@ -17,8 +17,8 @@
     <div class="row">
       <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
       <div class="right-panel">
-        <partition :root="dependedData" class="partition-chart"></partition>
-        <partition :root="dependedData" class="partition-chart"></partition>
+        <partition :root="dependedData" class="partition-chart" type='depended'></partition>
+        <partition :root="dependedData" class="partition-chart" type='denpending'></partition>
       </div>
     </div>
     <!-- <test></test> -->

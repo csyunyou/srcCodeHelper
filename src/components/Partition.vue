@@ -1,5 +1,5 @@
 <template>
-  <div class="partition-layout" ref='root'>
+  <div :id="`partition-${type}`" ref='root'>
   </div>
 </template>
 <script type="text/javascript">
@@ -12,24 +12,26 @@ export default {
       svg: null
     }
   },
-  props: ['root'],
+  props: ['root','type'],
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
     this.svg = d3.select(this.$refs.root).append('svg')
       .attr('width', this.svgWidth)
       .attr("height", this.svgHeight)
-    console.log(this.svgWidth, this.svgHeight)
+    console.log(this.svgWidth, this.svgHeight,this.type)
   },
   watch: {
     root(val) {
       if (val) {
+        this.svg.selectAll('*').remove()
         this.draw()
       }
     }
   },
   methods: {
     draw() {
+      console.log('descendants:',this.root.descendants())
       let x = d3.scaleLinear().range([0, this.svgWidth]),
         y = d3.scaleLinear().range([0, this.svgHeight])
               // console.log(this.root,this.root.descendants())
@@ -43,6 +45,7 @@ export default {
         .attr('fill', 'steelblue')
         .attr('stroke','#fff')
       g.append('text').attr('transform',(d)=>`translate(0,${y(d.y1-d.y0)/2})`).text(d=>d.data.name)
+      g.append('title').text(d=>d.data.name)
       // 
     }
   }

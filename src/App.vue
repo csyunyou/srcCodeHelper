@@ -54,8 +54,8 @@ export default {
       selectedFileName: 'None',
       treeRoot: null,
       badDeps: null,
-      dependedData:null,
-      dependingData:null
+      dependedData: null,
+      dependingData: null
     }
   },
   updated() {
@@ -67,28 +67,36 @@ export default {
         lenThreshold: 25
       }).then(({ data }) => {
         let treeRoot = d3.hierarchy(data.root);
-        treeRoot.descendants().forEach((d)=>{
-          d.data.name=this.genRelPath(d.data.name)
+        treeRoot.descendants().forEach((d) => {
+          // 提取相对路径
+          d.data.name = this.genRelPath(d.data.name)
+          if(d.data.type==='dir') return
+          // 若是文件，则提取该文件的依赖文件和被依赖文件的相对路径
+          d.data.fileInfo.depended = d.data.fileInfo.depended.map(dep => Object.assign({},
+            dep, { src: this.genRelPath(dep.src) }))
+          d.data.fileInfo.depending = d.data.fileInfo.depending.map(dep => Object.assign({},
+            dep, { src: this.genRelPath(dep.src) }))
         })
         treeRoot.sum(function(d) { return !d.children && d.fileInfo && d.fileInfo.size ? 1 : 0; });
-        this.treeRoot=treeRoot
+        this.treeRoot = treeRoot
 
+        // 提取所有坏依赖的相对路径
         let badDeps = data.badDeps
-        for(let deps of badDeps){
-          for(let {path} of deps.paths){
-            for(let i=0,len=path.length;i<len;i++){
-              path[i]=this.genRelPath(path[i])
+        for (let deps of badDeps) {
+          for (let { path } of deps.paths) {
+            for (let i = 0, len = path.length; i < len; i++) {
+              path[i] = this.genRelPath(path[i])
             }
           }
         }
-        this.badDeps=badDeps
+        this.badDeps = badDeps
         console.log(this.badDeps)
         console.log('root in app:', this.treeRoot)
       })
     },
-    genRelPath(path){
-      let match=path.match(/\/Users\/wendahuang\/Desktop\/vue\/src\/(.*)/)
-      return match?match[1]:path
+    genRelPath(path) {
+      let match = path.match(/\/Users\/wendahuang\/Desktop\/vue\/src\/(.*)/)
+      return match ? match[1] : path
     },
     partitionDataAdapter(selectedFile) {
       // 深搜查找节点
@@ -105,27 +113,28 @@ export default {
         return null
       }
       let fileNode = dfs(this.treeRoot)
-      this.dependedData=this.buildHierarchy(fileNode.data.fileInfo.depended)
-      this.dependingData=this.buildHierarchy(fileNode.data.fileInfo.depending)
+      this.dependedData = this.buildHierarchy(fileNode.data.fileInfo.depended)
+      this.dependingData = this.buildHierarchy(fileNode.data.fileInfo.depending)
       // this.dependedData=this.buildHierarchy(data.fileInfo.depended)
     },
-    buildHierarchy(depends){
-      let root={children:[]}
-      depends.forEach((dep)=>{
-        let child={
-          name:dep.file,
-          children:[]
+    buildHierarchy(depends) {
+      console.log(depends)
+      let root = { children: [] }
+      depends.forEach((dep) => {
+        let child = {
+          name: dep.src,
+          children: []
         }
-        dep.specifiers.forEach((d)=>{
+        dep.specifiers.forEach((d) => {
           child.children.push({
-            name:d.name,
-            type:d.type
+            name: d.name,
+            type: d.type
           })
         })
         root.children.push(child)
       })
-      let treeRoot=d3.hierarchy(root)
-      treeRoot.sum(function(d) { return !d.children? 1 : 0; });
+      let treeRoot = d3.hierarchy(root)
+      treeRoot.sum(function(d) { return !d.children ? 1 : 0; });
       return d3.partition()(treeRoot)
     }
   },
@@ -199,10 +208,10 @@ html {
       .right-panel {
         padding: 25px 0;
         flex: 1;
-        display:flex;
+        display: flex;
         flex-direction: column;
-        .partition-chart{
-          flex:1;
+        .partition-chart {
+          flex: 1;
         }
       }
     }

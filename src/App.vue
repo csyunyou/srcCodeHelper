@@ -54,7 +54,8 @@ export default {
       selectedFileName: 'None',
       treeRoot: null,
       badDeps: null,
-      dependedData:null
+      dependedData:null,
+      dependingData:null
     }
   },
   updated() {
@@ -63,7 +64,7 @@ export default {
   methods: {
     getFolderHierarchy() {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
-        lenTreshold: 15
+        lenThreshold: 25
       }).then(({ data }) => {
         this.treeRoot = d3.hierarchy(data.root);
         console.log(this.treeRoot)
@@ -141,7 +142,7 @@ html {
   flex-direction: column;
   .row {
     &:nth-child(1) {
-      flex: 2;
+      flex: 2.5;
       display: flex;
       .left-panel {
         flex: 1.3;

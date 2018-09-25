@@ -154,7 +154,8 @@ export default {
                   console.log(d)
                 })*/
         .append("title")
-        .text(function(d) { return d.data.name.slice(d.data.name.lastIndexOf('/') + 1) })
+        // .text(function(d) { return d.data.name.slice(d.data.name.lastIndexOf('/') + 1) })
+        .text((d)=>d.data.name)
         .each(function(d) {
           // console.log(this)
           // console.log(this.getBBox().width)

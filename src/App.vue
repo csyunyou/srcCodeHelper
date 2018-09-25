@@ -66,12 +66,29 @@ export default {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
         lenThreshold: 25
       }).then(({ data }) => {
-        this.treeRoot = d3.hierarchy(data.root);
-        console.log(this.treeRoot)
-        this.treeRoot.sum(function(d) { return !d.children && d.fileInfo && d.fileInfo.size ? 1 : 0; });
-        this.badDeps = data.badDeps
+        let treeRoot = d3.hierarchy(data.root);
+        treeRoot.descendants().forEach((d)=>{
+          d.data.name=this.genRelPath(d.data.name)
+        })
+        treeRoot.sum(function(d) { return !d.children && d.fileInfo && d.fileInfo.size ? 1 : 0; });
+        this.treeRoot=treeRoot
+
+        let badDeps = data.badDeps
+        for(let deps of badDeps){
+          for(let {path} of deps.paths){
+            for(let i=0,len=path.length;i<len;i++){
+              path[i]=this.genRelPath(path[i])
+            }
+          }
+        }
+        this.badDeps=badDeps
+        console.log(this.badDeps)
         console.log('root in app:', this.treeRoot)
       })
+    },
+    genRelPath(path){
+      let match=path.match(/\/Users\/wendahuang\/Desktop\/vue\/src\/(.*)/)
+      return match?match[1]:path
     },
     partitionDataAdapter(selectedFile) {
       // 深搜查找节点

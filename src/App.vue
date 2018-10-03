@@ -5,8 +5,8 @@
     <div class="row">
       <div class="left-panel">
         <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
-        <bar-chart class="bar-chart" chartData="barChartData"></bar-chart>
-        <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper"></dep-hell-wrapper>
+        <bar-chart class="bar-chart" :chartData="barChartData" :colorMap="colorMap"></bar-chart>
+        <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap"></dep-hell-wrapper>
       </div>
       <div class="mid-panel">
         <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
@@ -65,7 +65,8 @@ export default {
       badDeps: null,
       dependedData: null,
       dependingData: null,
-      lenDis:null
+      lenDis:null,
+      colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' }
     }
   },
   updated() {
@@ -73,7 +74,7 @@ export default {
   },
   computed:{
     barChartData(){
-      return this.badDeps?this.badDeps.map(d=>d.paths.length):null
+      return this.badDeps?this.badDeps.map(d=>({type:d.type,num:d.paths.length})):null
     }
   },
   methods: {
@@ -198,7 +199,7 @@ html {
           flex:1
         }
         .dep-hell-wrapper{
-          flex:3;
+          flex:5;
         }
       }
       .mid-panel {

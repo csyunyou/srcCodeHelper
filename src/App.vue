@@ -98,6 +98,7 @@ export default {
         }
         this.badDeps = badDeps
         this.lenDis=data.lenDis
+        // console.log(this.lenDis)
         console.log(this.badDeps)
         console.log('root in app:', this.treeRoot)
       })

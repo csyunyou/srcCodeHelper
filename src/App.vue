@@ -5,6 +5,7 @@
     <div class="row">
       <div class="left-panel">
         <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
+        <bar-chart class="bar-chart"></bar-chart>
         <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper"></dep-hell-wrapper>
       </div>
       <div class="mid-panel">
@@ -39,6 +40,7 @@ import WordCloud from './components/WordCloud.vue'
 import ParallelCoordinate from './components/ParallelCoordinate.vue'
 import Partition from './components/Partition.vue'
 import LineChart from './components/LineChart.vue'
+import BarChart from './components/BarChart.vue'
 import Test from './components/test.vue'
 
 export default {
@@ -53,6 +55,7 @@ export default {
     ParallelCoordinate,
     Partition,
     LineChart,
+    BarChart,
     Test
   },
   data() {
@@ -184,10 +187,13 @@ html {
         display: flex;
         flex-direction: column;
         .line-chart{
-          flex:3;
+          flex:1;
+        }
+        .bar-chart{
+          flex:1
         }
         .dep-hell-wrapper{
-          flex:6;
+          flex:3;
         }
       }
       .mid-panel {

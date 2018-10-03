@@ -5,7 +5,7 @@
     <div class="row">
       <div class="left-panel">
         <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
-        <bar-chart class="bar-chart"></bar-chart>
+        <bar-chart class="bar-chart" chartData="barChartData"></bar-chart>
         <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper"></dep-hell-wrapper>
       </div>
       <div class="mid-panel">
@@ -70,6 +70,11 @@ export default {
   },
   updated() {
     console.log('app updated');
+  },
+  computed:{
+    barChartData(){
+      return this.badDeps?this.badDeps.map(d=>d.paths.length):null
+    }
   },
   methods: {
     getFolderHierarchy() {

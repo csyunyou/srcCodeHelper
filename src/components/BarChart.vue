@@ -9,6 +9,19 @@ export default{
 		return{
 
 		}
+	},
+	props:['chartData'],
+	watch:{
+		chartData(val){
+			if(val){
+				this.draw()
+			}
+		}
+	},
+	methods:{
+		draw(){
+
+		}
 	}
 }
 </script>

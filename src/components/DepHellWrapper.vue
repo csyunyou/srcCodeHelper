@@ -36,8 +36,7 @@ export default {
       deps: null,
       svg: null,
       svgWidth: null,
-      svgHeight: 700,
-      colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' },
+      svgHeight: 500,
       legendLabelLen: 60,
       legend: {
         width: 50,
@@ -54,7 +53,7 @@ export default {
       fileDepInfo: null // store dep info for each file
     }
   },
-  props: ['root','badDeps'],
+  props: ['root','badDeps','colorMap'],
   updated() {
     console.log("dephellwrapper updated")
     console.log('root in dephell:', this.root)

@@ -2,27 +2,29 @@
   <div id="app">
     <!-- <chord-chart></chord-chart> -->
     <!-- <div class="left-panel" ref="leftPanel"> -->
-    <div class="row">
-      <div class="left-panel">
-        <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
-        <bar-chart class="bar-chart" :chartData="barChartData" :colorMap="colorMap"></bar-chart>
-        <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap"></dep-hell-wrapper>
-      </div>
-      <div class="mid-panel">
-        <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
-        <dep-table class="dep-table"></dep-table>
-        <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
-      </div>
-      <div class="right-panel">
-        <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
-        <div class="other"></div>
-      </div>
+    <div class="left-panel column">
+      <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
+      <bar-chart class="bar-chart" :chartData="barChartData" :colorMap="colorMap"></bar-chart>
+      <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap"></dep-hell-wrapper>
     </div>
-    <div class="row">
-      <parallel-coordinate :root="treeRoot" class='left-panel'></parallel-coordinate>
-      <div class="right-panel">
-        <partition :root="dependedData" class="partition-chart" type='depended'></partition>
-        <partition :root="dependingData" class="partition-chart" type='denpending'></partition>
+    <div class="right-panel column">
+      <div class="row">
+        <div class="left-panel">
+          <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
+          <dep-table class="dep-table"></dep-table>
+          <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
+        </div>
+        <div class="right-panel">
+          <div class="other"></div>
+        </div>
+      </div>
+      <div class="row">
+        <parallel-coordinate :root="treeRoot" class='parallel-coordinate'></parallel-coordinate>
+        <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
+        <div class="partition-layout">
+          <partition :root="dependedData" class="partition-chart" type='depended'></partition>
+          <partition :root="dependingData" class="partition-chart" type='denpending'></partition>
+        </div>
       </div>
     </div>
     <!-- <test></test> -->
@@ -65,16 +67,16 @@ export default {
       badDeps: null,
       dependedData: null,
       dependingData: null,
-      lenDis:null,
+      lenDis: null,
       colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' }
     }
   },
   updated() {
     console.log('app updated');
   },
-  computed:{
-    barChartData(){
-      return this.badDeps?this.badDeps.map(d=>({type:d.type,num:d.paths.length})):null
+  computed: {
+    barChartData() {
+      return this.badDeps ? this.badDeps.map(d => ({ type: d.type, num: d.paths.length })) : null
     }
   },
   methods: {
@@ -106,7 +108,7 @@ export default {
           }
         }
         this.badDeps = badDeps
-        this.lenDis=data.lenDis
+        this.lenDis = data.lenDis
         // console.log(this.lenDis)
         console.log(this.badDeps)
         console.log('root in app:', this.treeRoot)
@@ -183,64 +185,59 @@ html {
   color: #2c3e50;
   display: flex;
   height: 100%;
-  flex-direction: column;
-  .row {
-    &:nth-child(1) {
-      flex: 2.5;
-      display: flex;
-      .left-panel {
-        flex: 1.3;
+  .left-panel {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    .line-chart {
+      flex: 1;
+    }
+    .bar-chart {
+      flex: 1
+    }
+    .dep-hell-wrapper {
+      flex: 5;
+    }
+  }
+  .right-panel {
+    flex:3;
+    display:flex;
+    flex-direction:column;
+    .row{
+      &:nth-child(1){
+        flex:3;
         display: flex;
-        flex-direction: column;
-        .line-chart{
+        .left-panel{
+            flex:3;
+            display: flex;
+            flex-direction: column;
+            .dep-table{
+              flex:none;
+            }
+            .dep-path-wrapper{
+              flex:1;
+            }
+        }
+        .right-panel{
           flex:1;
         }
-        .bar-chart{
-          flex:1
-        }
-        .dep-hell-wrapper{
-          flex:5;
-        }
       }
-      .mid-panel {
-        flex: 2;
+      &:nth-child(2){
+        flex:1.2;
         display: flex;
-        flex-direction: column;
-        .selected-file {
-          font-weight: bold;
+        .parallel-coordinate{
+          flex:3;
         }
-        .dep-table {
-          flex: none;
+        .word-cloud{
+          flex:1;
         }
-        .dep-path-wrapper {
-          flex: auto;
-        }
-      }
-      .right-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        .word-cloud {
-          flex: 1;
-        }
-        .other {
-          flex: 1;
-        }
-      }
-    }
-    &:nth-child(2) {
-      flex: 1;
-      display: flex;
-      .left-panel {
-        flex: 2;
-      }
-      .right-panel {
-        padding: 25px 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        .partition-chart {
-          flex: 1;
+        .partition-layout{
+          flex:1;
+          display:flex;
+          flex-direction: column;
+          .partition-chart{
+            flex:1;
+          }
         }
       }
     }

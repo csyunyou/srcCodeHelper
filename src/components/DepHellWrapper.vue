@@ -36,7 +36,7 @@ export default {
       deps: null,
       svg: null,
       svgWidth: null,
-      svgHeight: 700,
+      svgHeight: 500,
       legendLabelLen: 60,
       legend: {
         width: 50,

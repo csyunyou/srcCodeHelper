@@ -62,7 +62,7 @@ export default {
 
       g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).ticks(null,'s'))
 
       g.append("path").datum(this.chartData).attr("d", line)
       	.attr("class","line")

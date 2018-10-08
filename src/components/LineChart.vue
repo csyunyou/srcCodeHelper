@@ -1,5 +1,5 @@
 <template>
-  <div id="lineChart">
+  <div id="lineChart" class="bl-card">
     <svg ref="root"></svg>
   </div>
 </template>
@@ -72,6 +72,7 @@ export default {
 
 </script>
 <style type="text/css" lang="scss">
+@import "../assets/reset.scss";
 #lineChart {
   svg {
     width: 100%;

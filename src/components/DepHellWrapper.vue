@@ -1,5 +1,5 @@
 <template>
-  <div class="dep-hell-wrapper">
+  <div class="dep-hell-wrapper bl-card">
     <div class="control-panel">
       <div class="control-len-threshold">
         <span class="label">Length Treshold</span>

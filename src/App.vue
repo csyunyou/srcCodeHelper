@@ -9,7 +9,7 @@
     </div>
     <div class="right-panel column">
       <div class="row">
-        <div class="left-panel">
+        <div class="left-panel bl-card">
           <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
           <dep-table class="dep-table"></dep-table>
           <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
@@ -186,17 +186,21 @@ html {
   display: flex;
   height: 100%;
   .left-panel {
+    margin-right: 10px;
+    // padding: 0 10px;
     flex: 1.2;
     display: flex;
     flex-direction: column;
     .line-chart {
       flex: 1;
+      margin-bottom: 10px;
     }
     .bar-chart {
-      flex: 1
+      flex: 1;
+      margin-bottom: 10px;
     }
     .dep-hell-wrapper {
-      margin-top: 30px;
+      // margin-top: 30px;
       flex: 5;
     }
   }
@@ -209,6 +213,8 @@ html {
         flex: 3;
         display: flex;
         .left-panel {
+    padding: 0 10px;
+          
           flex: 3;
           display: flex;
           flex-direction: column;
@@ -222,12 +228,14 @@ html {
         .right-panel {
           flex: 1;
         }
+        margin-bottom: 10px;
       }
       &:nth-child(2) {
         flex: 1.2;
         display: flex;
         .parallel-coordinate {
           flex: 3;
+          margin-right: 10px;
         }
         .word-cloud {
           flex: 1;

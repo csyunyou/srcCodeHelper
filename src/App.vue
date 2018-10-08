@@ -21,10 +21,10 @@
       <div class="row">
         <parallel-coordinate :root="treeRoot" class='parallel-coordinate'></parallel-coordinate>
         <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
-        <div class="partition-layout">
+        <!--         <div class="partition-layout">
           <partition :root="dependedData" class="partition-chart" type='depended'></partition>
           <partition :root="dependingData" class="partition-chart" type='denpending'></partition>
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- <test></test> -->
@@ -196,47 +196,48 @@ html {
       flex: 1
     }
     .dep-hell-wrapper {
+      margin-top: 30px;
       flex: 5;
     }
   }
   .right-panel {
-    flex:3;
-    display:flex;
-    flex-direction:column;
-    .row{
-      &:nth-child(1){
-        flex:3;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    .row {
+      &:nth-child(1) {
+        flex: 3;
         display: flex;
-        .left-panel{
-            flex:3;
-            display: flex;
-            flex-direction: column;
-            .dep-table{
-              flex:none;
-            }
-            .dep-path-wrapper{
-              flex:1;
-            }
+        .left-panel {
+          flex: 3;
+          display: flex;
+          flex-direction: column;
+          .dep-table {
+            flex: none;
+          }
+          .dep-path-wrapper {
+            flex: 1;
+          }
         }
-        .right-panel{
-          flex:1;
+        .right-panel {
+          flex: 1;
         }
       }
-      &:nth-child(2){
-        flex:1.2;
+      &:nth-child(2) {
+        flex: 1.2;
         display: flex;
-        .parallel-coordinate{
-          flex:3;
+        .parallel-coordinate {
+          flex: 3;
         }
-        .word-cloud{
-          flex:1;
+        .word-cloud {
+          flex: 1;
         }
-        .partition-layout{
-          flex:1;
-          display:flex;
+        .partition-layout {
+          flex: 1;
+          display: flex;
           flex-direction: column;
-          .partition-chart{
-            flex:1;
+          .partition-chart {
+            flex: 1;
           }
         }
       }

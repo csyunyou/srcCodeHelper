@@ -1,19 +1,15 @@
 <template>
-  <div class="dep-hell-wrapper" ref="root">
+  <div class="dep-hell-wrapper">
     <div class="control-panel">
-      <!--       <div class="control-button-group">
-        <button class="long-btn">Long</button>
-        <button class="direct-btn">Direct Circle</button>
-        <button class="indirect-btn">Indirect Circle</button>
-      </div> -->
       <div class="control-len-threshold">
         <span class="label">Length Treshold</span>
         <el-slider v-model="lenTreshold" :min="0" :max="longestDepLen" @change="filterLongDep">
         </el-slider>
       </div>
     </div>
-    <div class="dep-hell">
-      <svg :width="svgWidth" :height="svgHeight" ref="svg">
+    <div class="dep-hell" ref="root">
+      <!-- <svg :width="svgWidth" :height="svgHeight" ref="svg"> -->
+      <svg ref="svg">
         <!--
           Manual and somehow cumbersome computations are done to center the lengend wrapper g.
           More advanced and simple solutions are expceted
@@ -53,7 +49,7 @@ export default {
       fileDepInfo: null // store dep info for each file
     }
   },
-  props: ['root','badDeps','colorMap'],
+  props: ['root', 'badDeps', 'colorMap'],
   updated() {
     console.log("dephellwrapper updated")
     console.log('root in dephell:', this.root)
@@ -117,8 +113,7 @@ export default {
         .outerRadius(function(d) { return Math.max(0, y(d.y1)); });
 
 
-      var svg = this.svg.append("g")
-        .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")");
+      var svg = this.centerSvg.append("g")
 
       //partition the tree and attach additional attr on root as well as its descendants
       var node = svg.selectAll(".hierarchy-node").data(partition(this.root).descendants().slice(1)).enter().append("g")
@@ -154,7 +149,7 @@ export default {
                 })*/
         .append("title")
         // .text(function(d) { return d.data.name.slice(d.data.name.lastIndexOf('/') + 1) })
-        .text((d)=>d.data.name)
+        .text((d) => d.data.name)
         .each(function(d) {
           // console.log(this)
           // console.log(this.getBBox().width)
@@ -197,38 +192,38 @@ export default {
     },
     drawDendrogram() {
       // console.log(this.lenTreshold,legendInnerPadding)
-/*      let vm = this
-      let svg = this.svg.append("g")
-        .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
-        .attr("class", "dendrogram");
-*/
+      /*      let vm = this
+            let svg = this.svg.append("g")
+              .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
+              .attr("class", "dendrogram");
+      */
       var cluster = d3.cluster()
         .size([360, this.dendrogramR]).separation(() => 1);
       cluster(this.root)
 
-/*      var link = svg.append("g").attr("class", "dendrogram-links").selectAll(".link")
-        .data(this.root.descendants().slice(1))
-        .enter().append("path")
-        .attr("class", "link")
-        .attr("d", function(d) {
-          return "M" + project(d.x, d.y) +
-            "C" + project(d.x, (d.y + d.parent.y) / 2) +
-            " " + project(d.parent.x, (d.y + d.parent.y) / 2) +
-            " " + project(d.parent.x, d.parent.y);
-        });*/
+      /*      var link = svg.append("g").attr("class", "dendrogram-links").selectAll(".link")
+              .data(this.root.descendants().slice(1))
+              .enter().append("path")
+              .attr("class", "link")
+              .attr("d", function(d) {
+                return "M" + project(d.x, d.y) +
+                  "C" + project(d.x, (d.y + d.parent.y) / 2) +
+                  " " + project(d.parent.x, (d.y + d.parent.y) / 2) +
+                  " " + project(d.parent.x, d.parent.y);
+              });*/
 
-/*      var node = svg.append("g").attr("class", "dendrogram-nodes").selectAll(".node")
-        .data(this.root.descendants())
-        .enter().append("g")
-        .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
-        .attr("transform", function(d) { return "translate(" + project(d.x, d.y) + ")"; });*/
+      /*      var node = svg.append("g").attr("class", "dendrogram-nodes").selectAll(".node")
+              .data(this.root.descendants())
+              .enter().append("g")
+              .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+              .attr("transform", function(d) { return "translate(" + project(d.x, d.y) + ")"; });*/
 
-/*      node.append("circle")
-        .attr("r", 2.5);
+      /*      node.append("circle")
+              .attr("r", 2.5);
 
-      node.append("title").text(d => d.data.name)
-      node.append("text")
-        .attr("dy", "0.31em")*/
+            node.append("title").text(d => d.data.name)
+            node.append("text")
+              .attr("dy", "0.31em")*/
       // .attr("x", function(d) { return d.x < 180 === !d.children ? 6 : -6; })
       // .style("text-anchor", function(d) { return d.x < 180 === !d.children ? "start" : "end"; })
       // .attr("transform", function(d) { return "rotate(" + (d.x < 180 ? d.x - 90 : d.x + 90) + ")"; })
@@ -242,53 +237,52 @@ export default {
     },
     drawDepLinks() {
       // console.log(this.lenTreshold)
-        // let { directCirclePaths, indirectCirclePaths } = data
-        //radialStack depends on badDeps data
-        this.drawRadialStack()
-        let data = this.badDeps.slice()
-        let longGroup = data.find(d => d.type === 'long'),
-          svg = this.svg.append("g")
-          .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
-          .attr("class", "dep-link-wrapper"),
-          vm = this
-        // this.lenTreshold=longGroup.threshold
-        this.longestDepLen = longGroup.longestPathLen
-        let depLink = svg.append("g").attr("class", "dep-links-group").selectAll(".dep-links-group")
-        var line = d3.radialLine()
-          .curve(d3.curveBundle.beta(0.85))
-          .radius(function(d) { return d.y; })
-          .angle(function(d) { return d.x / 180 * Math.PI; });
+      // let { directCirclePaths, indirectCirclePaths } = data
+      //radialStack depends on badDeps data
+      this.drawRadialStack()
+      let data = this.badDeps.slice()
+      let longGroup = data.find(d => d.type === 'long'),
+        svg = this.centerSvg.append("g")
+        .attr("class", "dep-link-wrapper"),
+        vm = this
+      // this.lenTreshold=longGroup.threshold
+      this.longestDepLen = longGroup.longestPathLen
+      let depLink = svg.append("g").attr("class", "dep-links-group").selectAll(".dep-links-group")
+      var line = d3.radialLine()
+        .curve(d3.curveBundle.beta(0.85))
+        .radius(function(d) { return d.y; })
+        .angle(function(d) { return d.x / 180 * Math.PI; });
 
-        this.depLinkGroupG = depLink.data(data).enter().append("g")
-          .attr("class", d => `dep-links-group__${d.type}`)
-        this.depLinkGroupG.selectAll(".dep-link")
-          .data(d => extractShortesPath(d.paths))
-          .enter().append("path")
-          .each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
-          .attr("class", "dep-link")
-          .attr("d", line)
-        //extract shortest paht between each node in paths to achieve edge bundling
-        function extractShortesPath(paths) {
-          // console.log(paths)
-          let nodes = vm.root.leaves()
-          var map = {},
-            shortestPathArr = [];
-          // Compute a map from name to node.
-          nodes.forEach(function(d) {
-            map[d.data.name] = d;
-          });
+      this.depLinkGroupG = depLink.data(data).enter().append("g")
+        .attr("class", d => `dep-links-group__${d.type}`)
+      this.depLinkGroupG.selectAll(".dep-link")
+        .data(d => extractShortesPath(d.paths))
+        .enter().append("path")
+        .each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
+        .attr("class", "dep-link")
+        .attr("d", line)
+      //extract shortest paht between each node in paths to achieve edge bundling
+      function extractShortesPath(paths) {
+        // console.log(paths)
+        let nodes = vm.root.leaves()
+        var map = {},
+          shortestPathArr = [];
+        // Compute a map from name to node.
+        nodes.forEach(function(d) {
+          map[d.data.name] = d;
+        });
 
-          // console.log(map)
-          // For each path, construct a link from the source to target node.
-          paths.forEach(function({ path }) {
-            path.reduce(function(a, b) {
-              // console.log(a,b)
-              shortestPathArr.push(map[a].path(map[b]))
-              return b
-            })
+        // console.log(map)
+        // For each path, construct a link from the source to target node.
+        paths.forEach(function({ path }) {
+          path.reduce(function(a, b) {
+            // console.log(a,b)
+            shortestPathArr.push(map[a].path(map[b]))
+            return b
           })
-          return shortestPathArr
-        }
+        })
+        return shortestPathArr
+      }
     },
     drawRadialStack() {
       //get StackData from badDeps
@@ -321,8 +315,7 @@ export default {
         .innerRadius(function(d) { return y(d[0]) })
         .outerRadius(function(d) { return y(d[1]) });
 
-      let seiresG = this.svg.append("g")
-        .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
+      let seiresG = this.centerSvg.append("g")
         .attr("class", "radial-stack")
         .selectAll("g").data(series).enter().append('g').attr("class", 'seires')
         .attr("fill", (d, i) => {
@@ -334,6 +327,7 @@ export default {
     },
     initSvg() {
       this.svg = d3.select(".dep-hell svg")
+      this.centerSvg = d3.select(".dep-hell svg .center-g")
       /*            this.svg = d3.select(".dep-hell").append("svg")
                     .attr("width", this.svgWidth)
                     .attr("height", this.svgHeight)*/
@@ -354,21 +348,31 @@ export default {
       console.log('root in dephellwrapper watch:', this.root)
       if (val) {
         console.log(this.root)
-        this.initSvg()
-        this.drawDendrogram()
-        this.drawHierachy()
-        this.drawDepLinks()
+                this.initSvg()
+                this.drawDendrogram()
+                this.drawHierachy()
+                this.drawDepLinks()
       }
     }
   },
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
+    this.svgHeight = Math.floor(this.$refs.root.clientHeight)
+    d3.select(".dep-hell svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
+      .append("g").attr("class","center-g")
+      .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight /1.9) + ")")
   }
 }
 
 </script>
 <style type="text/css" lang="scss">
+.dep-hell-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .control-panel {
+  flex: none;
   margin: 0 40px;
   .control-button-group {
     margin-bottom: 10px;
@@ -411,6 +415,7 @@ export default {
 }
 
 .dep-hell {
+  flex: auto;
   .legend-wrapper {
     rect.disabled-type {
       fill: grey;

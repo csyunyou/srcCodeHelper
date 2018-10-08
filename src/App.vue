@@ -9,7 +9,7 @@
     </div>
     <div class="right-panel column">
       <div class="row">
-        <div class="left-panel">
+        <div class="left-panel bl-card">
           <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
           <dep-table class="dep-table"></dep-table>
           <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
@@ -21,10 +21,10 @@
       <div class="row">
         <parallel-coordinate :root="treeRoot" class='parallel-coordinate'></parallel-coordinate>
         <word-cloud :root="treeRoot" class="word-cloud"></word-cloud>
-        <div class="partition-layout">
+        <!--         <div class="partition-layout">
           <partition :root="dependedData" class="partition-chart" type='depended'></partition>
           <partition :root="dependingData" class="partition-chart" type='denpending'></partition>
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- <test></test> -->
@@ -186,57 +186,71 @@ html {
   display: flex;
   height: 100%;
   .left-panel {
+    margin-right: 10px;
+    // padding: 0 10px;
     flex: 1.2;
     display: flex;
     flex-direction: column;
     .line-chart {
       flex: 1;
+      margin-bottom: 10px;
     }
     .bar-chart {
-      flex: 1
+      flex: 1;
+      margin-bottom: 10px;
     }
     .dep-hell-wrapper {
+      // margin-top: 30px;
       flex: 5;
     }
   }
   .right-panel {
-    flex:3;
-    display:flex;
-    flex-direction:column;
-    .row{
-      &:nth-child(1){
-        flex:3;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    .row {
+      &:nth-child(1) {
+        flex: 3;
         display: flex;
-        .left-panel{
-            flex:3;
-            display: flex;
-            flex-direction: column;
-            .dep-table{
-              flex:none;
-            }
-            .dep-path-wrapper{
-              flex:1;
-            }
-        }
-        .right-panel{
-          flex:1;
-        }
-      }
-      &:nth-child(2){
-        flex:1.2;
-        display: flex;
-        .parallel-coordinate{
-          flex:3;
-        }
-        .word-cloud{
-          flex:1;
-        }
-        .partition-layout{
-          flex:1;
-          display:flex;
+        .left-panel {
+          padding: 10px 10px 0 10px;
+          flex: 3;
+          display: flex;
           flex-direction: column;
-          .partition-chart{
-            flex:1;
+          .title{
+            font-weight: bold;
+            .selected-file{
+              text-decoration: underline;
+            }
+          }
+          .dep-table {
+            flex: none;
+          }
+          .dep-path-wrapper {
+            flex: 1;
+          }
+        }
+        .right-panel {
+          flex: 1;
+        }
+        margin-bottom: 10px;
+      }
+      &:nth-child(2) {
+        flex: 1.2;
+        display: flex;
+        .parallel-coordinate {
+          flex: 3;
+          margin-right: 10px;
+        }
+        .word-cloud {
+          flex: 1;
+        }
+        .partition-layout {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          .partition-chart {
+            flex: 1;
           }
         }
       }

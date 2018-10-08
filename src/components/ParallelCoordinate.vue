@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" id="parallel-coordinate" @click="resetBrush">
+  <div ref="root" id="parallel-coordinate" @click="resetBrush" class="bl-card">
   </div>
 </template>
 <script type="text/javascript">
@@ -44,11 +44,11 @@ export default {
       function path(d) {
         return line(that.dimensions.map(function(dim) { return [x(dim), that.y[dim](d[dim])]; }));
       }
-      var margin = { top: 50, right: 10, bottom: 30, left: 40 },
+      var margin = { top: 50, right: 0, bottom: 30, left: 0 },
         width = this.svgWidth - margin.left - margin.right,
         height = this.svgHeight - margin.top - margin.bottom;
 
-      var x = d3.scaleBand().rangeRound([0, this.svgWidth]).padding(0.2),
+      var x = d3.scaleBand().range([0, width]).paddingInner(1).paddingOuter(0.3),
         dragging = {};
 
 
@@ -65,7 +65,7 @@ export default {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       x.domain(this.dimensions);
-
+      console.log(x('func'))
       this.dimensions.forEach((d) => {
         this.y[d] = d3.scaleLinear()
           .domain(d3.extent(this.chartData, function(p) {
@@ -161,6 +161,8 @@ export default {
     }
   },
   mounted() {
+    let x= d3.scaleOrdinal().range([0,1000]).domain(['a','b','c'])
+    console.log(x('a'),x('b'),x('c'))
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
     this.extents = this.dimensions.map(function(p) { return [0, 0]; })

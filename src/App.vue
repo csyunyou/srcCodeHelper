@@ -213,11 +213,16 @@ html {
         flex: 3;
         display: flex;
         .left-panel {
-    padding: 0 10px;
-          
+          padding: 10px 10px 0 10px;
           flex: 3;
           display: flex;
           flex-direction: column;
+          .title{
+            font-weight: bold;
+            .selected-file{
+              text-decoration: underline;
+            }
+          }
           .dep-table {
             flex: none;
           }

@@ -406,6 +406,7 @@ export default {
   .control-len-threshold {
     .label {
       line-height: 42px;
+      font-weight: bold;
     }
     .el-slider {
       width: 70%;

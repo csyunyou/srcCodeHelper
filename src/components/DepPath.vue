@@ -1,5 +1,5 @@
 <template>
-  <div ref="root">
+  <div ref="root" class="bl-card">
     <!-- <div>num:</div> -->
   </div>
 </template>
@@ -9,8 +9,6 @@ export default {
   data() {
     return {
       graphData: {},
-      svgWidth: null,
-      svgHeight: null,
       svg: null,
       nodes: null,
       links: null,
@@ -123,7 +121,7 @@ export default {
 
     }
   },
-  props: ['color', 'type', 'depData', 'fileName'],
+  props: ['color', 'type', 'depData', 'fileName','svgHeight','svgWidth'],
   watch: {
     depData() {
       // console.log('depData update')
@@ -139,9 +137,9 @@ export default {
   },
   mounted() {
     // console.log('mount')
-    this.svgWidth = Math.floor(this.$refs.root.clientWidth)
+    // this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     // this.svgWidth =373
-    this.svgHeight = Math.floor(this.$refs.root.clientHeight)
+    // this.svgHeight = Math.floor(this.$refs.root.clientHeight)
     this.svg = d3.select(this.$refs.root).append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
     this.dataAdapter()
     this.draw()

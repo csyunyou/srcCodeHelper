@@ -221,10 +221,12 @@ html {
             font-weight: bold;
             .selected-file{
               text-decoration: underline;
+              font-style: italic;
             }
           }
           .dep-table {
             flex: none;
+            margin-bottom: 10px;
           }
           .dep-path-wrapper {
             flex: 1;

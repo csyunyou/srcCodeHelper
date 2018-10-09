@@ -9,7 +9,7 @@
     </div>
     <div class="right-panel column">
       <div class="row">
-        <div class="left-panel bl-card">
+        <div class="left-panel bl-card-shadow">
           <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
           <dep-table class="dep-table"></dep-table>
           <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>

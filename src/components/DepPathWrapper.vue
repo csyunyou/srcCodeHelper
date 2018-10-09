@@ -55,9 +55,11 @@ export default {
   display: flex; // flex-direction:column;
   .overview-path-wrapper {
     flex: 1;
+    margin-right: 10px;
   }
   .detail-path {
     flex: 1;
+    margin-bottom: 10px;
   }
 }
 

@@ -20,7 +20,7 @@ export default {
       depTotalData: {},
       svgWidth: null,
       svgHeight: null,
-      tabHeight:75
+      tabHeight:66
     }
   },
   components: { DepPath,DetailPath},
@@ -59,7 +59,6 @@ export default {
   }
   .detail-path {
     flex: 1;
-    margin-bottom: 10px;
   }
 }
 

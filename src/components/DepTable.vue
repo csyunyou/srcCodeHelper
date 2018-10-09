@@ -54,6 +54,7 @@ export default {
 </script>
 <style type="text/css" lang="scss">
 .dep-table{
+  margin-top: 10px;
   min-height:300px;
 }
 </style>

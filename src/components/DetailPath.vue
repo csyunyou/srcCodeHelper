@@ -10,7 +10,12 @@ export default {
       graphData: {},
       depData: null,
       svgWidth: null,
-      svgHeight: null
+      svgHeight: null,
+      forceStrength:{
+      	long:-30,
+      	indirect:-120,
+      	direct:-120
+      }
     }
   },
   mounted() {
@@ -41,7 +46,7 @@ export default {
 
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody().distanceMin(60).strength(-120))
+        .force("charge", d3.forceManyBody().distanceMin(60).strength(this.forceStrength[this.depData.type]))
         // .force("charge", d3.forceCollide())
         // .force("charge", d3.forceRadial())
         .force("center", d3.forceCenter(this.svgWidth / 2, this.svgHeight / 2));

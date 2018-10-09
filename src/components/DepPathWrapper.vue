@@ -1,6 +1,14 @@
 <template>
   <div class="dep-path-wrapper" ref="root">
-    <dep-path :class="`dep-path-${key}`" v-for="(val,key) in depTotalData.colorMap" :color="val" :type="key" :depData="depTotalData['depInfo'][key+'-paths']" :fileName='depTotalData.depInfo.fileName'></dep-path>
+    <div class="overview-path-wrapper">
+      <el-tabs type="card">
+        <el-tab-pane v-for="(val,key) in depTotalData.colorMap" :label="key">
+          <dep-path :class="`dep-path-${key}`" :color="val" :type="key" :depData="depTotalData['depInfo'][key+'-paths']" :fileName='depTotalData.depInfo.fileName' :svgWidth="pSvgWidth" :svgHeight="pSvgHeight"></dep-path>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <div class="detail-path">123</div>
+    <!--     <dep-path :class="`dep-path-${key}`" v-for="(val,key) in depTotalData.colorMap" :color="val" :type="key" :depData="depTotalData['depInfo'][key+'-paths']" :fileName='depTotalData.depInfo.fileName'></dep-path> -->
   </div>
 </template>
 <script type="text/javascript">
@@ -8,7 +16,10 @@ import DepPath from './DepPath.vue'
 export default {
   data() {
     return {
-      depTotalData: {}
+      depTotalData: {},
+      svgWidth: null,
+      svgHeight: null,
+      tabHeight:75
     }
   },
   components: { DepPath },
@@ -19,24 +30,33 @@ export default {
       console.log('begin', data)
     })
   },
+  computed:{
+    pSvgWidth(){
+      return this.svgWidth/2
+    },
+    pSvgHeight(){
+      return this.svgHeight-this.tabHeight
+    }
+  },
   updated() {
     // console.log("updated wrapper")
   },
   mounted() {
-    // this.svgWidth = Math.floor(this.$refs.root.clientWidth)
+    this.svgWidth = Math.floor(this.$refs.root.clientWidth)
+    this.svgHeight = Math.floor(this.$refs.root.clientHeight)
+    console.log(this.svgHeight,this.svgWidth)
   }
 }
 
 </script>
 <style type="text/css" lang="scss" scoped>
 .dep-path-wrapper {
-  display: flex;
-  // flex-direction:column;
-  .dep-path-long,.dep-path-indirect {
-  	flex:1;
+  display: flex; // flex-direction:column;
+  .overview-path-wrapper {
+    flex: 1;
   }
-  .dep-path-direct{
-  	flex:1;
+  .detail-path {
+    flex: 1;
   }
 }
 

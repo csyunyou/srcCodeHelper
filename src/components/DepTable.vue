@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <h1></h1>
+  <div class="dep-table">
     <el-table :data="tableData" style="width: 100%" max-height="300" border highlight-current-row
-    @current-change="handleCurrentChange">
+    @current-change="handleCurrentChange" stripe>
       <el-table-column type="index" width="40">
       </el-table-column>
       <el-table-column prop="path" label="Path" :formatter="pathFormatter">
@@ -52,7 +51,8 @@ export default {
 }
 
 </script>
-<style type="text/css" lang="scss" scoped>
-
-
+<style type="text/css" lang="scss">
+.dep-table{
+  min-height:300px;
+}
 </style>

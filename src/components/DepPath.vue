@@ -9,8 +9,6 @@ export default {
   data() {
     return {
       graphData: {},
-      svgWidth: null,
-      svgHeight: null,
       svg: null,
       nodes: null,
       links: null,

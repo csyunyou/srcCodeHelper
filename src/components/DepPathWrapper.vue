@@ -7,12 +7,13 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="detail-path">123</div>
+    <detail-path></detail-path>
     <!--     <dep-path :class="`dep-path-${key}`" v-for="(val,key) in depTotalData.colorMap" :color="val" :type="key" :depData="depTotalData['depInfo'][key+'-paths']" :fileName='depTotalData.depInfo.fileName'></dep-path> -->
   </div>
 </template>
 <script type="text/javascript">
 import DepPath from './DepPath.vue'
+import DetailPath from './DetailPath.vue'
 export default {
   data() {
     return {
@@ -22,7 +23,7 @@ export default {
       tabHeight:75
     }
   },
-  components: { DepPath },
+  components: { DepPath,DetailPath},
   created() {
     //DepHellWrapper component emit the data which includes 'colorMap' and 'depInfo'
     this.$bus.$on('begin-dep-path', data => {

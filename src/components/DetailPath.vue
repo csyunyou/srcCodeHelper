@@ -25,7 +25,20 @@ export default {
   },
   methods: {
     draw() {
+      d3.select(this.$refs.root).selectAll('svg *').remove()
       let vm = this
+      // 添加箭头形状
+      this.svg.append("defs").append("marker")
+        .attr("id", "detail-path-arrow")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 15)
+        .attr("refY", -1.5)
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 6)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M0,-5L10,0L0,5");
+
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
         .force("charge", d3.forceManyBody().distanceMax(100))
@@ -39,6 +52,7 @@ export default {
         .data(this.graphData.links)
         .enter().append("path")
         .attr("class", "link")
+        .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
 
       this.nodes = this.svg.append("g")
         .attr("class", "nodes")

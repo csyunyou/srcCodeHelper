@@ -41,11 +41,12 @@ export default {
 
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody().distanceMax(100))
+        .force("charge", d3.forceManyBody().distanceMin(60).strength(-120))
         // .force("charge", d3.forceCollide())
         // .force("charge", d3.forceRadial())
         .force("center", d3.forceCenter(this.svgWidth / 2, this.svgHeight / 2));
 
+      // 画线
       this.links = this.svg.append("g")
         .attr("class", "links")
         .selectAll("path")
@@ -54,6 +55,7 @@ export default {
         .attr("class", "link")
         .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
 
+      // 画点
       this.nodes = this.svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
@@ -73,8 +75,16 @@ export default {
           .on("drag", dragged)
           .on("end", dragended));
 
+      // 标题
       this.nodes.append("title")
         .text(function(d) { return d.id; })
+      // 说明文字
+      this.text = this.svg.append("g").selectAll("text")
+        .data(this.graphData.nodes)
+        .enter().append("text")
+        .attr("x", 8)
+        .attr("y", ".31em")
+        .text(function(d) { return vm.formatText(d.id); });
 
       simulation
         .nodes(this.graphData.nodes)
@@ -86,7 +96,7 @@ export default {
       function ticked() {
         vm.links.attr("d", linkArc);
         vm.nodes.attr("transform", transform);
-        // text.attr("transform", transform);
+        vm.text.attr("transform", transform);
       }
 
       function dragstarted(d) {
@@ -117,6 +127,10 @@ export default {
         return "translate(" + d.x + "," + d.y + ")";
       }
     },
+    formatText(text){
+    	let idx=text.lastIndexOf("/")
+    	return text.slice(idx+1).match(/(.*)(\.js)$/)[1]
+    },
     dataAdapter() {
       // console.log(this.depData)
       let nodes = new Set(),
@@ -136,7 +150,6 @@ export default {
         let parts = d.split('|')
         return { source: parts[0], target: parts[1] }
       })
-      console.log(this.graphData)
     }
   }
 }

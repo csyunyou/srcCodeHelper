@@ -61,13 +61,22 @@ export default {
         .force("center", d3.forceCenter(this.svgWidth / 2, this.svgHeight / 2));
 
       // 画线
-      this.links = this.svg.append("g")
+      const links = this.svg.append("g")
         .attr("class", "links")
         .selectAll("path")
         .data(this.graphData.links)
-        .enter().append("path")
+        .enter().append("g")
+      // 线路径
+      this.linksPath = links.append("path")
         .attr("class", "link")
+        .attr("id", d => `${d.source}|${d.target}`)
         .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
+      // 线文字信息
+      this.linksText = links.append("text")
+        .append("textPath")
+        .attr('href',d => `#${d.source}|${d.target}`)
+        .attr('startOffset',10)
+        .text(d=>"text")
 
       // 画点
       this.nodes = this.svg.append("g")
@@ -92,14 +101,16 @@ export default {
       // 标题
       this.nodes.append("title")
         .text(function(d) { return d.id; })
-      // 说明文字
+      // 结点文字信息
       this.text = this.svg.append("g").selectAll("text")
         .data(this.graphData.nodes)
         .enter().append("text")
         .attr("x", 8)
         .attr("y", ".31em")
         .text(function(d) { return vm.formatText(d.id); });
-
+      // 边文字信息
+      this.svg.append("g").selectAll(".link-text")
+        .data()
       simulation
         .nodes(this.graphData.nodes)
         .on("tick", ticked);
@@ -108,7 +119,7 @@ export default {
         .links(this.graphData.links);
 
       function ticked() {
-        vm.links.attr("d", linkArc);
+        vm.linksPath.attr("d", linkArc);
         vm.nodes.attr("transform", transform);
         vm.text.attr("transform", transform);
       }

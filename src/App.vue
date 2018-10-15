@@ -5,14 +5,15 @@
     <div class="left-panel column">
       <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
       <bar-chart class="bar-chart" :chartData="barChartData" :colorMap="colorMap"></bar-chart>
-      <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap"></dep-hell-wrapper>
+      <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap">
+      </dep-hell-wrapper>
     </div>
     <div class="right-panel column">
       <div class="row">
         <div class="left-panel bl-card-shadow">
           <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
           <dep-table class="dep-table"></dep-table>
-          <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
+          <dep-path-wrapper class="dep-path-wrapper" :lenThreshold="lenThreshold"></dep-path-wrapper>
         </div>
         <div class="right-panel">
           <div class="other"></div>
@@ -68,7 +69,8 @@ export default {
       dependedData: null,
       dependingData: null,
       lenDis: null,
-      colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' }
+      colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' },
+      lenThreshold:25
     }
   },
   updated() {
@@ -82,7 +84,7 @@ export default {
   methods: {
     getFolderHierarchy() {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
-        lenThreshold: 25
+        lenThreshold: this.lenThreshold
       }).then(({ data }) => {
         let treeRoot = d3.hierarchy(data.root);
         treeRoot.descendants().forEach((d) => {

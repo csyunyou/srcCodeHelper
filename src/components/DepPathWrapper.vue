@@ -7,7 +7,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <detail-path></detail-path>
+    <detail-path :lenThreshold="lenThreshold"></detail-path>
     <!--     <dep-path :class="`dep-path-${key}`" v-for="(val,key) in depTotalData.colorMap" :color="val" :type="key" :depData="depTotalData['depInfo'][key+'-paths']" :fileName='depTotalData.depInfo.fileName'></dep-path> -->
   </div>
 </template>
@@ -24,6 +24,7 @@ export default {
     }
   },
   components: { DepPath,DetailPath},
+  props:['lenThreshold'],
   created() {
     //DepHellWrapper component emit the data which includes 'colorMap' and 'depInfo'
     this.$bus.$on('begin-dep-path', data => {

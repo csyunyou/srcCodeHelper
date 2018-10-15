@@ -11,23 +11,32 @@ export default {
       depData: null,
       svgWidth: null,
       svgHeight: null,
-      forceStrength:{
-      	long:-30,
-      	indirect:-120,
-      	direct:-120
-      }
+      forceStrength: {
+        long: -30,
+        indirect: -120,
+        direct: -120
+      },
+      type: null
     }
   },
   mounted() {
     this.$bus.$on('highlight-dep', (dep) => {
-      this.depData = dep
-      this.dataAdapter()
-      this.draw()
+      this.type = dep.type
+      this.$axios.get('files/getDetailBadDepInfoByDepId', {
+        lenThreshold: this.lenThreshold,
+        type: dep.type,
+        depId: dep.id
+      }).then(({ data }) => {
+        this.depData = data
+        this.dataAdapter()
+        this.draw()
+      })
     })
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
     this.svg = d3.select(this.$refs.root).append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
   },
+  props: ['lenThreshold'],
   methods: {
     draw() {
       d3.select(this.$refs.root).selectAll('svg *').remove()
@@ -46,19 +55,28 @@ export default {
 
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody().distanceMin(60).strength(this.forceStrength[this.depData.type]))
+        .force("charge", d3.forceManyBody().distanceMin(60).strength(this.forceStrength[this.type]))
         // .force("charge", d3.forceCollide())
         // .force("charge", d3.forceRadial())
         .force("center", d3.forceCenter(this.svgWidth / 2, this.svgHeight / 2));
 
       // 画线
-      this.links = this.svg.append("g")
+      const links = this.svg.append("g")
         .attr("class", "links")
         .selectAll("path")
         .data(this.graphData.links)
-        .enter().append("path")
+        .enter().append("g")
+      // 线路径
+      this.linksPath = links.append("path")
         .attr("class", "link")
+        .attr("id", d => `${d.source}|${d.target}`)
         .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
+      // 线文字信息
+      this.linksText = links.append("text")
+        .append("textPath")
+        .attr('href',d => `#${d.source}|${d.target}`)
+        .attr('startOffset',10)
+        .text(d=>"text")
 
       // 画点
       this.nodes = this.svg.append("g")
@@ -83,14 +101,16 @@ export default {
       // 标题
       this.nodes.append("title")
         .text(function(d) { return d.id; })
-      // 说明文字
+      // 结点文字信息
       this.text = this.svg.append("g").selectAll("text")
         .data(this.graphData.nodes)
         .enter().append("text")
         .attr("x", 8)
         .attr("y", ".31em")
         .text(function(d) { return vm.formatText(d.id); });
-
+      // 边文字信息
+      this.svg.append("g").selectAll(".link-text")
+        .data()
       simulation
         .nodes(this.graphData.nodes)
         .on("tick", ticked);
@@ -99,7 +119,7 @@ export default {
         .links(this.graphData.links);
 
       function ticked() {
-        vm.links.attr("d", linkArc);
+        vm.linksPath.attr("d", linkArc);
         vm.nodes.attr("transform", transform);
         vm.text.attr("transform", transform);
       }
@@ -132,29 +152,13 @@ export default {
         return "translate(" + d.x + "," + d.y + ")";
       }
     },
-    formatText(text){
-    	let idx=text.lastIndexOf("/")
-    	return text.slice(idx+1).match(/(.*)(\.js)$/)[1]
+    formatText(text) {
+      let idx = text.lastIndexOf("/")
+      return text.slice(idx + 1).match(/(.*)(\.js)$/)[1]
     },
     dataAdapter() {
-      // console.log(this.depData)
-      let nodes = new Set(),
-        links = new Set(),
-        { path, type } = this.depData
-      for (let i = 0; i < path.length - 1; i++) {
-        nodes.add(path[i]) //add node
-        links.add(path[i] + '|' + path[i + 1]) //add link('|' is used as conjunction to connect the two nodes)
-      }
-      //we need to connect the last node and the first node in type 'indirect' || 'direct'
-      if (type === 'indirect' || type === 'direct')
-        links.add(path[path.length - 1] + '|' + path[0])
-      nodes.add(path[path.length - 1]) // do not miss the last node
-      // console.log(nodes, links)
-      this.graphData.nodes = [...nodes].map(d => ({ id: d }))
-      this.graphData.links = [...links].map(function(d) {
-        let parts = d.split('|')
-        return { source: parts[0], target: parts[1] }
-      })
+      this.graphData.nodes = this.depData.nodes.map((d) => ({ id: d }))
+      this.graphData.links = this.depData.links.slice()
     }
   }
 }

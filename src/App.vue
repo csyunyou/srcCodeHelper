@@ -9,7 +9,7 @@
     </div>
     <div class="right-panel column">
       <div class="row">
-        <div class="left-panel bl-card">
+        <div class="left-panel bl-card-shadow">
           <div class="title">Currently selected file:<span class="selected-file">{{selectedFileName}}</span></div>
           <dep-table class="dep-table"></dep-table>
           <dep-path-wrapper class="dep-path-wrapper"></dep-path-wrapper>
@@ -213,7 +213,7 @@ html {
         flex: 3;
         display: flex;
         .left-panel {
-          padding: 10px 10px 0 10px;
+          padding: 10px 10px 10px 10px;
           flex: 3;
           display: flex;
           flex-direction: column;
@@ -236,6 +236,7 @@ html {
           flex: 1;
         }
         margin-bottom: 10px;
+
       }
       &:nth-child(2) {
         flex: 1.2;

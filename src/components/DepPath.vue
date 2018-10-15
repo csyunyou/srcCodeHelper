@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="bl-card">
+  <div ref="root" class="bl-card dep-path">
     <!-- <div>num:</div> -->
   </div>
 </template>
@@ -43,6 +43,8 @@ export default {
       this.links.attr("stroke-dasharray", null)
     },
     draw() {
+      d3.select(this.$refs.root).selectAll('svg *').remove()
+      // console.log(d3.select(this.$refs.root).selectAll('svg *'))
       let vm = this
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))

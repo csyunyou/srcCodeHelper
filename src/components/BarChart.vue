@@ -1,5 +1,5 @@
 <template>
-  <div id="barChart" class="bl-card">
+  <div id="barChart" class="bl-card-shadow">
     <svg ref="root"></svg>
   </div>
 </template>

@@ -45,6 +45,7 @@ export default {
     //DepHellWrapper component emit the data which includes 'colorMap' and 'depInfo'
     this.$bus.$on('begin-dep-table', data => {
       // console.log(data)
+      this.tableData=[]
       this.dataAdapter(data)
     })
   }
@@ -53,6 +54,7 @@ export default {
 </script>
 <style type="text/css" lang="scss">
 .dep-table{
+  margin-top: 10px;
   min-height:300px;
 }
 </style>

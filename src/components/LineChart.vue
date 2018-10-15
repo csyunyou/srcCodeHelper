@@ -1,5 +1,5 @@
 <template>
-  <div id="lineChart" class="bl-card">
+  <div id="lineChart" class="bl-card-shadow">
     <svg ref="root"></svg>
   </div>
 </template>

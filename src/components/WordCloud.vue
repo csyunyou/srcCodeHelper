@@ -1,5 +1,5 @@
 <template>
-  <div id="wordCloud" class="bl-card">
+  <div id="wordCloud" class="bl-card-shadow">
     <svg ref="root"></svg>
   </div>
 </template>

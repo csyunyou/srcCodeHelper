@@ -40,6 +40,10 @@ export default {
   },
   props: ['lenThreshold'],
   methods: {
+    genRelPath(path) {
+      let match = path.match(/\/Users\/wendahuang\/Desktop\/vue\/src\/(.*)/)
+      return match ? match[1] : path
+    },
     draw() {
       d3.select(this.$refs.root).selectAll('svg *').remove()
       let vm = this
@@ -95,7 +99,7 @@ export default {
         .attr("stroke", "black")
         .on('click', (d) => {
           this.$bus.$emit('draw-codechart', d.id)
-          // this.$bus.$emit('draw-wordcloud', d.id)
+          this.$bus.$emit('draw-wordcloud', this.genRelPath(d.id))
         })
         .call(d3.drag()
           .on("start", dragstarted)

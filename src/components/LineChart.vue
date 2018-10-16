@@ -1,6 +1,15 @@
 <template>
-  <div id="lineChart" class="bl-card-shadow">
-    <svg ref="root"></svg>
+  <div id='line-chart-wrapper' class="bl-card-shadow">
+    <div class="line-chart" ref="root">
+      <svg></svg>
+    </div>
+    <div class="control-panel">
+      <div class="control-len-threshold">
+        <span class="label">Length Treshold</span>
+        <el-slider v-model="lenTreshold" :min="0" :max="longestDepLen" @change="filterLongDep">
+        </el-slider>
+      </div>
+    </div>
   </div>
 </template>
 <script type="text/javascript">
@@ -17,7 +26,7 @@ export default {
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
-    d3.select(this.$refs.root).attr("width", this.svgWidth).attr("height", this.svgHeight)
+    // d3.select(this.$refs.root).attr("width", this.svgWidth).attr("height", this.svgHeight)
     console.log(this.svgWidth, this.svgHeight, this.lenDis)
   },
   watch: {
@@ -38,10 +47,10 @@ export default {
       }
     },
     draw() {
-      var svg = d3.select(this.$refs.root),
+      var svg = d3.select(".line-chart svg"),
         margin = { top: 20, right: 30, bottom: 30, left: 50 },
-        width = svg.attr("width") - margin.left - margin.right,
-        height = svg.attr("height") - margin.top - margin.bottom,
+        width = this.svgWidth - margin.left - margin.right,
+        height = this.svgHeight - margin.top - margin.bottom,
         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       var y = d3.scaleLinear().range([height, 0]),
@@ -62,10 +71,10 @@ export default {
 
       g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(null,'s'))
+        .call(d3.axisLeft(y).ticks(null, 's'))
 
       g.append("path").datum(this.chartData).attr("d", line)
-      	.attr("class","line")
+        .attr("class", "line")
     }
   }
 }
@@ -73,17 +82,35 @@ export default {
 </script>
 <style type="text/css" lang="scss">
 @import "../assets/reset.scss";
-#lineChart {
-  svg {
-    width: 100%;
-    height: 100%;
-    .axis--x path{
-      display: none;
+#line-chart-wrapper {
+  .line-chart {
+    flex: auto;
+    svg {
+      width: 100%;
+      height: 100%;
+      .axis--x path {
+        display: none;
+      }
+      .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
     }
-    .line {
-      fill: none;
-      stroke: steelblue;
-      stroke-width: 1.5px;
+  }
+  .control-panel {
+    flex: none;
+    padding: 0 40px;
+    border-top:1px solid #ebeef5;
+    .control-len-threshold {
+      .label {
+        line-height: 40px;
+        font-weight: bold;
+      }
+      .el-slider {
+        width: 62%;
+        float: right;
+      }
     }
   }
 }

@@ -1,27 +1,14 @@
 <template>
-  <div class="dep-hell-wrapper bl-card-shadow">
-    <div class="control-panel">
-      <div class="control-len-threshold">
-        <span class="label">Length Treshold</span>
-        <el-slider v-model="lenTreshold" :min="0" :max="longestDepLen" @change="filterLongDep">
-        </el-slider>
-      </div>
-    </div>
-    <div class="dep-hell" ref="root">
-      <!-- <svg :width="svgWidth" :height="svgHeight" ref="svg"> -->
-      <svg ref="svg">
-        <!--
-          Manual and somehow cumbersome computations are done to center the lengend wrapper g.
-          More advanced and simple solutions are expceted
-        -->
-        <g class="legend-wrapper" :style="{transform:`translateX(${(svgWidth-legendWrapperWidth)/2}px)`}">
-          <g :style="{transform:`translate(${idx*(legend.width+legendLabelLen+20)}px,20px)`}" v-for="(val,key,idx) in colorMap">
-            <rect :width="legend.width" :height="legend.height" :fill="val" rx="5" ry="5" @click="toggleType(idx)" :class="{'disabled-type':!typeStatus[idx]}"></rect>
-            <text :textLength="legendLabelLen" :x="legend.width+3" :y="legend.height/2" lengthAdjust="spacingAndGlyphs" alignment-baseline="central">{{key}}</text>
-          </g>
+  <div class="dep-hell bl-card-shadow" ref="root">
+    <!-- <svg :width="svgWidth" :height="svgHeight" ref="svg"> -->
+    <svg ref="svg">
+      <g class="legend-wrapper" :style="{transform:`translateX(${(svgWidth-legendWrapperWidth)/2}px)`}">
+        <g :style="{transform:`translate(${idx*(legend.width+legendLabelLen+20)}px,20px)`}" v-for="(val,key,idx) in colorMap">
+          <rect :width="legend.width" :height="legend.height" :fill="val" rx="5" ry="5" @click="toggleType(idx)" :class="{'disabled-type':!typeStatus[idx]}"></rect>
+          <text :textLength="legendLabelLen" :x="legend.width+3" :y="legend.height/2" lengthAdjust="spacingAndGlyphs" alignment-baseline="central">{{key}}</text>
         </g>
-      </svg>
-    </div>
+      </g>
+    </svg>
   </div>
 </template>
 <script type="text/javascript">
@@ -32,7 +19,7 @@ export default {
       deps: null,
       svg: null,
       svgWidth: null,
-      svgHeight: 500,
+      svgHeight: 0,
       legendLabelLen: 60,
       legend: {
         width: 50,
@@ -55,7 +42,7 @@ export default {
     console.log('root in dephell:', this.root)
   },
   computed: {
-    dendrogramR() { return Math.min(this.svgWidth, this.svgHeight) / 2 - 150 },
+    dendrogramR() { return Math.min(this.svgWidth, this.svgHeight) / 2 - 120 },
     legendWrapperWidth() {
       let num = Object.keys(this.colorMap).length
       return (this.legend.width + this.legendInnerPadding + this.legendLabelLen) * num + (this.legendOuterPadding) * (num - 1)
@@ -347,76 +334,27 @@ export default {
     root(val) {
       console.log('root in dephellwrapper watch:', this.root)
       if (val) {
-        console.log(this.root)
-                this.initSvg()
-                this.drawDendrogram()
-                this.drawHierachy()
-                this.drawDepLinks()
+        this.initSvg()
+        this.drawDendrogram()
+        this.drawHierachy()
+        this.drawDepLinks()
       }
     }
   },
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
-    d3.select(".dep-hell svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
-      .append("g").attr("class","center-g")
-      .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight /1.9) + ")")
+    console.log(this.svgHeight,Math.floor(this.$refs.root.offsetHeight))
+    // Todo:目前需要手动减10
+    d3.select(".dep-hell svg").attr("width", this.svgWidth).attr("height", this.svgHeight-10)
+      .append("g").attr("class", "center-g")
+      .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 1.9) + ")")
   }
 }
 
 </script>
 <style type="text/css" lang="scss">
-.dep-hell-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.control-panel {
-  flex: none;
-  margin: 0 40px;
-  .control-button-group {
-    margin-bottom: 10px;
-    display: flex; // justify-content:space-between;
-    // color:white !important;
-    button {
-      height: 40px;
-      border: 1px solid white;
-      margin-right: 20px;
-      border-radius: 5px;
-      min-width: 70px;
-      color: white;
-      font-size: 20px;
-    }
-    button:hover {
-      box-shadow: 2px 2px 5px #888888;
-    }
-    .long-btn {
-      background: #e41a1c;
-    }
-    .direct-btn {
-      background: #377eb8;
-    }
-    .indirect-btn {
-      background: #4daf4a;
-    }
-    .filtered-btn {
-      // backgrou
-    }
-  }
-  .control-len-threshold {
-    .label {
-      line-height: 42px;
-      font-weight: bold;
-    }
-    .el-slider {
-      width: 70%;
-      float: right;
-    }
-  }
-}
-
 .dep-hell {
-  flex: auto;
   .legend-wrapper {
     rect.disabled-type {
       fill: grey;

@@ -3,7 +3,7 @@
 > 可视化文件之间的依赖（引用）关系、坏依赖（长依赖|间接依赖|直接依赖）
 
 ##  可视化系统界面
-![可视化界面系统](./static/vis-interface.png)
+![可视化界面系统](./static/vis-interface_v2.png)
 
 ## 系统组成
 - 依赖关系环图,对应DepHellWrapper.vue:展示文件的层次结构以及三种坏依赖关系的空间分布

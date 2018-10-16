@@ -16,7 +16,9 @@ export default {
         indirect: -120,
         direct: -120
       },
-      type: null
+      type: null,
+      depTypeColorMap: d3.scaleOrdinal(['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4', '#fed9a6'])
+        .domain(['ImportSpecifier', 'ImportDefaultSpecifier', 'ImportNamespaceSpecifier', 'ExportSpecifier', 'ExportAllSpecifier'])
     }
   },
   mounted() {
@@ -47,8 +49,8 @@ export default {
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 15)
         .attr("refY", -1.5)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
+        .attr("markerWidth", 3)
+        .attr("markerHeight", 3)
         .attr("orient", "auto")
         .append("path")
         .attr("d", "M0,-5L10,0L0,5");
@@ -70,13 +72,15 @@ export default {
       this.linksPath = links.append("path")
         .attr("class", "link")
         .attr("id", d => `${d.source}|${d.target}`)
+        .style('stroke',d=>this.depTypeColorMap(d.type))
         .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
       // 线文字信息
-      this.linksText = links.append("text")
+/*      this.linksText = links.append("text")
+        .attr('dy',10)
         .append("textPath")
-        .attr('href',d => `#${d.source}|${d.target}`)
-        .attr('startOffset',10)
-        .text(d=>"text")
+        .attr('href', d => `#${d.source}|${d.target}`)
+        .attr('startOffset', 10)
+        .text(d => "text")*/
 
       // 画点
       this.nodes = this.svg.append("g")
@@ -169,7 +173,7 @@ export default {
   .link {
     fill: none;
     stroke: #666;
-    stroke-width: 1.5px;
+    stroke-width: 3px;
   }
 }
 

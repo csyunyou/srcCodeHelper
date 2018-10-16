@@ -72,15 +72,15 @@ export default {
       this.linksPath = links.append("path")
         .attr("class", "link")
         .attr("id", d => `${d.source}|${d.target}`)
-        .style('stroke',d=>this.depTypeColorMap(d.type))
+        .style('stroke', d => this.depTypeColorMap(d.type))
         .attr("marker-end", function(d) { return "url(#detail-path-arrow)"; });
       // 线文字信息
-/*      this.linksText = links.append("text")
-        .attr('dy',10)
-        .append("textPath")
-        .attr('href', d => `#${d.source}|${d.target}`)
-        .attr('startOffset', 10)
-        .text(d => "text")*/
+      /*      this.linksText = links.append("text")
+              .attr('dy',10)
+              .append("textPath")
+              .attr('href', d => `#${d.source}|${d.target}`)
+              .attr('startOffset', 10)
+              .text(d => "text")*/
 
       // 画点
       this.nodes = this.svg.append("g")
@@ -94,8 +94,8 @@ export default {
         })
         .attr("stroke", "black")
         .on('click', (d) => {
-          /*          this.$bus.$emit('draw-wordcloud', d.id)
-                    this.$bus.$emit('draw-partition', d.id)*/
+          this.$bus.$emit('draw-codechart', d.id)
+          // this.$bus.$emit('draw-wordcloud', d.id)
         })
         .call(d3.drag()
           .on("start", dragstarted)

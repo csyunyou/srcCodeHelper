@@ -236,6 +236,7 @@ html {
         }
         .right-panel {
           flex: 1;
+          max-width:463px;
         }
         margin-bottom: 10px;
 

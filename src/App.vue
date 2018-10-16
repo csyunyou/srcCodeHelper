@@ -15,9 +15,7 @@
           <dep-table class="dep-table"></dep-table>
           <dep-path-wrapper class="dep-path-wrapper" :lenThreshold="lenThreshold"></dep-path-wrapper>
         </div>
-        <div class="right-panel">
-          <div class="other"></div>
-        </div>
+          <code-chart class="right-panel bl-card-shadow"></code-chart>
       </div>
       <div class="row">
         <parallel-coordinate :root="treeRoot" class='parallel-coordinate'></parallel-coordinate>
@@ -44,6 +42,7 @@ import ParallelCoordinate from './components/ParallelCoordinate.vue'
 import Partition from './components/Partition.vue'
 import LineChart from './components/LineChart.vue'
 import BarChart from './components/BarChart.vue'
+import CodeChart from './components/CodeChart.vue'
 import Test from './components/test.vue'
 
 export default {
@@ -59,6 +58,7 @@ export default {
     Partition,
     LineChart,
     BarChart,
+    CodeChart,
     Test
   },
   data() {
@@ -190,7 +190,7 @@ html {
   .left-panel {
     margin-right: 10px;
     // padding: 0 10px;
-    flex: 1.2;
+    flex: 1;
     display: flex;
     flex-direction: column;
     .line-chart {
@@ -216,7 +216,7 @@ html {
         display: flex;
         .left-panel {
           padding: 10px 10px 10px 10px;
-          flex: 3;
+          flex: 2;
           display: flex;
           flex-direction: column;
           .title{
@@ -236,6 +236,7 @@ html {
         }
         .right-panel {
           flex: 1;
+          max-width:463px;
         }
         margin-bottom: 10px;
 

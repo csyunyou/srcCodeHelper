@@ -56,7 +56,6 @@ export default {
       d3.select(".dep-hell .radial-stack").remove()
       this.drawDepLinks()
       this.drawDendrogram()
-
     },
     throttledFilterLongDep() {
       let delay = 3000,

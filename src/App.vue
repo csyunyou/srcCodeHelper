@@ -3,7 +3,9 @@
     <!-- <chord-chart></chord-chart> -->
     <!-- <div class="left-panel" ref="leftPanel"> -->
     <div class="left-panel column">
-      <line-chart class="line-chart" :lenDis="lenDis"></line-chart>
+      <line-chart class="line-chart" :lenDis="lenDis" :lenThreshold='lenThreshold' :maxLen='maxLen'
+      @filterLongDep='filterLongDep'>
+      </line-chart>
       <bar-chart class="bar-chart" :chartData="barChartData" :colorMap="colorMap"></bar-chart>
       <dep-hell-wrapper :root="treeRoot" :badDeps="badDeps" class="dep-hell-wrapper" :colorMap="colorMap">
       </dep-hell-wrapper>
@@ -70,7 +72,8 @@ export default {
       dependingData: null,
       lenDis: null,
       colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' },
-      lenThreshold:25
+      lenThreshold:25,
+      maxLen:9999
     }
   },
   updated() {
@@ -82,6 +85,11 @@ export default {
     }
   },
   methods: {
+    // 通过slider改变len阈值时，重新向后台请求数据
+    filterLongDep(val){
+      this.lenThreshold=val
+      this.getFolderHierarchy()
+    },
     getFolderHierarchy() {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
         lenThreshold: this.lenThreshold
@@ -111,6 +119,7 @@ export default {
         }
         this.badDeps = badDeps
         this.lenDis = data.lenDis
+        this.maxLen=badDeps.find(d=>d.type==='long').maxLen
         // console.log(this.lenDis)
         console.log(this.badDeps)
         console.log('root in app:', this.treeRoot)

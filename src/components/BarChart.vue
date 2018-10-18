@@ -22,6 +22,8 @@ export default {
   },
   methods: {
     draw() {
+      console.log('bar draw')
+      d3.select('#barChart>svg *').remove()
       var svg = d3.select(this.$refs.root),
         margin = { top: 20, right: 30, bottom: 30, left: 50 },
         width = svg.attr("width") - margin.left - margin.right,
@@ -30,9 +32,6 @@ export default {
 
       var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
         y = d3.scaleLinear().rangeRound([height, 0]);
-
-      var g = svg.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       x.domain(this.chartData.map(function(d) { return d.type; }));
       y.domain([0, d3.max(this.chartData, function(d) { return d.num; })]);

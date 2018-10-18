@@ -6,7 +6,7 @@
     <div class="control-panel">
       <div class="control-len-threshold">
         <span class="label">Length Treshold</span>
-        <el-slider v-model="lenTreshold" :min="0" :max="longestDepLen" @change="filterLongDep">
+        <el-slider v-model="lenThreshold" :min="0" :max='maxLen' @change="filterLongDep">
         </el-slider>
       </div>
     </div>
@@ -22,7 +22,7 @@ export default {
       chartData: []
     }
   },
-  props: ["lenDis"],
+  props: ["lenDis",'lenThreshold','maxLen'],
   mounted() {
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
@@ -40,13 +40,18 @@ export default {
   methods: {
     // 用0去插值缺失值
     dataAdapter() {
+      this.chartData=[]
       let maxLen = d3.max(Object.keys(this.lenDis), d => parseInt(d))
       for (let i = 0; i < maxLen; i++) {
         if (this.lenDis[i]) this.chartData.push([i, this.lenDis[i]])
         else this.chartData.push([i, 0])
       }
     },
+    filterLongDep(val){
+      this.$emit('filterLongDep',val)
+    },
     draw() {
+      d3.select('.line-chart>svg *').remove()
       var svg = d3.select(".line-chart svg"),
         margin = { top: 20, right: 30, bottom: 30, left: 50 },
         width = this.svgWidth - margin.left - margin.right,

@@ -1,6 +1,6 @@
 <template>
   <div class="dep-table">
-    <el-table :data="tableData" style="width: 100%" max-height="300" border highlight-current-row
+    <el-table :data="tableData" style="width: 100%" max-height="200" border highlight-current-row
     @current-change="handleCurrentChange" stripe>
       <el-table-column type="index" width="40">
       </el-table-column>
@@ -55,6 +55,6 @@ export default {
 <style type="text/css" lang="scss">
 .dep-table{
   margin-top: 10px;
-  min-height:300px;
+  min-height:200px;
 }
 </style>

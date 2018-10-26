@@ -126,6 +126,7 @@ export default {
       simulation.force("link")
         .links(this.graphData.links);
 
+
       function ticked() {
         vm.linksPath.attr("d", linkArc);
         vm.nodes.attr("transform", transform);

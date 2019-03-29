@@ -72,8 +72,8 @@ export default {
       dependingData: null,
       lenDis: null,
       colorMap: { long: '#e41a1c', indirect: '#4daf4a', direct: '#377eb8' },
-      // lenThreshold:25,
-      lenThreshold:16,
+      lenThreshold:25,
+      // lenThreshold:16,
       maxLen:9999
     }
   },
@@ -94,8 +94,8 @@ export default {
     getFolderHierarchy() {
       this.$axios.get('files/getFolderHierarchyAndFileInfo', {
         lenThreshold: this.lenThreshold,
-        // libName:'vue'
-        libName:'d3'
+        libName:'vue'
+        // libName:'d3'
       }).then(({ data }) => {
         let treeRoot = d3.hierarchy(data.root);
         console.log('leaves num:',treeRoot.leaves().length)
@@ -250,6 +250,7 @@ html {
         .right-panel {
           flex: 1;
           max-width:463px;
+          // max-height:500px;
         }
         margin-bottom: 10px;
 

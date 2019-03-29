@@ -24,6 +24,7 @@ export default {
 </script>
 <style type="text/css" lang="scss">
 .code-chart {
+  height: 100%;
   overflow-x: scroll;
   overflow-y: scroll;
 }

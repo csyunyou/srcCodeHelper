@@ -41,7 +41,8 @@ export default {
           lenThreshold: this.lenThreshold,
           type: dep.type,
           depId: dep.id,
-          libName:'d3'
+          // libName:'d3'
+          libName:'vue'
         })
         .then(({ data }) => {
           this.depData = data;

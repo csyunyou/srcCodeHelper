@@ -178,16 +178,17 @@ export default {
     },
     drawDendrogram() {
       // console.log(this.lenTreshold,legendInnerPadding)
-      /*      let vm = this
-            let svg = this.svg.append("g")
+           let vm = this
+/*             let svg = this.svg.append("g")
               .attr("transform", "translate(" + this.svgWidth / 2 + "," + (this.svgHeight / 2) + ")")
-              .attr("class", "dendrogram");
-      */
+              .attr("class", "dendrogram"); */
+        let svg=this.centerSvg.append("g")
+      
       var cluster = d3.cluster()
         .size([360, this.dendrogramR]).separation(() => 1);
       cluster(this.root)
-
-      /*      var link = svg.append("g").attr("class", "dendrogram-links").selectAll(".link")
+      return 
+           var link = svg.append("g").attr("class", "dendrogram-links").selectAll(".link")
               .data(this.root.descendants().slice(1))
               .enter().append("path")
               .attr("class", "link")
@@ -196,20 +197,20 @@ export default {
                   "C" + project(d.x, (d.y + d.parent.y) / 2) +
                   " " + project(d.parent.x, (d.y + d.parent.y) / 2) +
                   " " + project(d.parent.x, d.parent.y);
-              });*/
+              });
 
-      /*      var node = svg.append("g").attr("class", "dendrogram-nodes").selectAll(".node")
+            var node = svg.append("g").attr("class", "dendrogram-nodes").selectAll(".node")
               .data(this.root.descendants())
               .enter().append("g")
               .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
-              .attr("transform", function(d) { return "translate(" + project(d.x, d.y) + ")"; });*/
+              .attr("transform", function(d) { return "translate(" + project(d.x, d.y) + ")"; });
 
-      /*      node.append("circle")
+           node.append("circle")
               .attr("r", 2.5);
 
             node.append("title").text(d => d.data.name)
             node.append("text")
-              .attr("dy", "0.31em")*/
+              .attr("dy", "0.31em")
       // .attr("x", function(d) { return d.x < 180 === !d.children ? 6 : -6; })
       // .style("text-anchor", function(d) { return d.x < 180 === !d.children ? "start" : "end"; })
       // .attr("transform", function(d) { return "rotate(" + (d.x < 180 ? d.x - 90 : d.x + 90) + ")"; })
@@ -368,13 +369,13 @@ export default {
   .dendrogram-links {
     path {
       stroke: steelblue;
-      stroke-opacity: 0;
+      stroke-opacity: 1.0;
       fill: none;
       pointer-events: none;
     }
   }
   .dendrogram-nodes {
-    opacity: 0;
+    opacity: 1.0;
   }
   /*   .dep-link {
     stroke: red;

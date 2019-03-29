@@ -6,7 +6,7 @@
     <div class="control-panel">
       <div class="control-len-threshold">
         <span class="label">Length Treshold</span>
-        <el-slider v-model="lenThreshold" :min="0" :max='maxLen' @change="filterLongDep">
+        <el-slider v-model="lenThreshold" :min="0" :max='maxLen' @change="filterLongDep" show-input :show-input-controls="false">
         </el-slider>
       </div>
     </div>
@@ -76,7 +76,7 @@ export default {
 
       g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(null, 's'))
+        .call(d3.axisLeft(y).ticks(5, 's'))
 
       g.append("path").datum(this.chartData).attr("d", line)
         .attr("class", "line")
@@ -105,7 +105,7 @@ export default {
   }
   .control-panel {
     flex: none;
-    padding: 0 40px;
+    padding: 0 20px;
     border-top:1px solid #ebeef5;
     .control-len-threshold {
       .label {
@@ -113,7 +113,7 @@ export default {
         font-weight: bold;
       }
       .el-slider {
-        width: 62%;
+        width: 70%;
         float: right;
       }
     }

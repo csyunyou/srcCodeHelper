@@ -36,7 +36,7 @@ export default {
     resetBrush() {
       this.extents = this.dimensions.map(function(p) { return [0, 0]; });
       this.brushParallelChart()
-      d3.selectAll('.brush rect:nth-child(n+2)').style('display','none')
+      d3.selectAll('.brush rect:nth-child(n+2)').style('display', 'none')
     },
     draw() {
       const that = this
@@ -52,7 +52,8 @@ export default {
         dragging = {};
 
 
-      var line = d3.line(),
+      var line = d3.line().curve(d3.curveCardinal),
+        // var line=d3.line(),
         //axis = d3.axisLeft(x),
         background,
         foreground
@@ -151,18 +152,21 @@ export default {
         }
       }
       d3.selectAll('.foreground>path').style("display", function(d) {
-        return that.dimensions.every(function(p, i) {
+        let shouldDisplay = false
+        shouldDisplay = that.dimensions.every(function(p, i) {
           if (that.extents[i][0] == 0 && that.extents[i][0] == 0) {
             return true;
           }
           return that.extents[i][1] <= d[p] && d[p] <= that.extents[i][0];
-        }) ? null : "none";
+        })
+        if (shouldDisplay) console.log(d.name,d)
+        return shouldDisplay ? null : 'none'
       });
     }
   },
   mounted() {
-    let x= d3.scaleOrdinal().range([0,1000]).domain(['a','b','c'])
-    console.log(x('a'),x('b'),x('c'))
+    let x = d3.scaleOrdinal().range([0, 1000]).domain(['a', 'b', 'c'])
+    console.log(x('a'), x('b'), x('c'))
     this.svgWidth = Math.floor(this.$refs.root.clientWidth)
     this.svgHeight = Math.floor(this.$refs.root.clientHeight)
     this.extents = this.dimensions.map(function(p) { return [0, 0]; })
